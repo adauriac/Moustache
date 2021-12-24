@@ -13,8 +13,6 @@ public class Distribue {
     public int outCartesAscii(int verbose) {
 	// sort sur sdtout les cartes et retourne le nombre d'as sortis
 	//  recherches des extrema gauche et droite
-	int[] gauche = new int[5];
-	int[] droite = new int[5];
 	int minGauche = 20;
 	int maxDroite = 20;
 	for(int ligne=0;ligne<5;ligne++) {
@@ -22,13 +20,11 @@ public class Distribue {
 	    for (j=0;j<20+1+20;j++)
 		if (num[ligne][j]!=-1)
 		    break;
-	    gauche[ligne] = j;
 	    if (j<minGauche)
 		minGauche=j;
 	    for (j=20+1+20-1;j>=0;j--)
 		if (num[ligne][j]!=-1)
 		    break;
-	    droite[ligne] = j;
 	    if (j>maxDroite)
 		maxDroite = j;
 	}	// il y a des cartes sur ligne l entre gauche[l] et droite[l] INCLUS
@@ -55,8 +51,6 @@ public class Distribue {
     public String outCartesHtml() {
 	//  recherches des extrema gauche et droite
 	// deteremination du rectangle ou il y a des cartes
-	int[] gauche = new int[5];
-	int[] droite = new int[5];
 	int minGauche = 20;
 	int maxDroite = 20;
 	for(int ligne=0;ligne<5;ligne++) {
@@ -64,17 +58,15 @@ public class Distribue {
 	    for (j=0;j<20+1+20;j++)
 		if (num[ligne][j]!=-1)
 		    break;
-	    gauche[ligne] = j;
 	    if (j<minGauche)
 		minGauche=j;
 	    for (j=20+1+20-1;j>=0;j--)
 		if (num[ligne][j]!=-1)
 		    break;
-	    droite[ligne] = j;
 	    if (j>maxDroite)
 		maxDroite = j;
 	}
-	// il y a des cartes sur ligne l entre gauche[l] et droite[l] INCLUS
+	// il y a des cartes sur ligne l entre gauche[l] et droite[l] INCLUS SISI 
 	StringBuilder result= new StringBuilder();
 	String Debut= "<!DOCTYPE html>\n<html>\n<head>\n<style>\n.flex-container {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: nowrap;\n}\n.flex-container > div {\n  width: 75px;\n  height: 96px;\n  margin: 0px;\n}\n</style>\n</head>\n<body>\n";
 	result.append(Debut);
@@ -89,7 +81,7 @@ public class Distribue {
 		    fich = "0.gif";
 		else
 		    fich = Cartes[k];
-		result.append("<div><img src=\""+fich+"\"></div>\n");
+		result.append("<div><img src=\"").append(fich).append("\"></div>\n");
 	    }
 	    result.append("</div>\n");
 	}  // fin for(int l=0;l<5;l++) 
@@ -100,7 +92,7 @@ public class Distribue {
     // ***************************************************************************
     
    public void distribue(){
-	List<Integer> perm = new ArrayList<Integer>();
+	List<Integer> perm = new ArrayList<>();
 	for(int i=0;i<20+1+20;i++) {
 	    for(int j=0;j<5;j++)
 		num[j][i] = -1;  // pas de carte posee
@@ -139,8 +131,8 @@ public class Distribue {
     } // FIN distribue
     // ********************************************************************
     
-    public static void main(String args[]){
-	int n = Integer.valueOf(args[0]);
+    public static void main(String[] args){
+	int n = Integer.parseInt(args[0]);
 	System.out.println(n);
 	Distribue myane = new Distribue();
 	int[] accu = {0,0,0,0,0};
@@ -154,17 +146,15 @@ public class Distribue {
 	    System.out.print(accu[i]*1.0/n+" ");
 	}
 	System.out.println();
-	if (true)
-	    return;
 	myane.distribue();
-	if (true) {
+//	if (true) {
 	    int nba =  myane.outCartesAscii(1);
 	    System.out.println(nba);
-	}
-	else {
-	    String ans = myane.outCartesHtml();
-	    System.out.print(ans);
-	}
+//	}
+//	else {
+//	    String ans = myane.outCartesHtml();
+//	    System.out.print(ans);
+//	}
     }  // FIN class main(
 }  // FIN class Distribue
 // ********************************************************************
