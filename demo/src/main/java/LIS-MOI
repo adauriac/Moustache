@@ -1,0 +1,4 @@
+pour lancer en ligne de commande:
+1) aller a ~/java/Moustache/demo/src/main/java
+2) java com.example.demo.service.Distribue 1000
+c'est un example ou 1000 est un parametre de ligne de commande
