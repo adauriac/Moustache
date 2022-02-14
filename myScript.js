@@ -1,3 +1,16 @@
+// ****************************************************************
+//                      PARAMETRES MODIFIABLES
+// ****************************************************************
+let verbose = 0; // sur la console
+let margeHaut = 100, margeCentre = 20;
+let lCarte = 96,cCarte = 75; // les dim sont 75x96
+//cCarte = 30; // l'overlap sera 75-cCarte
+let espaceMonte = 20; // espace entrev la colonne ou on monte et ses voisines
+let seed = 1910298639;
+// ****************************************************************
+//                      FIN PARAMETRES MODIFIABLES
+// ****************************************************************
+
 class RandomSeeded {
     // Si la fonction random() est appelee sans que seed() n'ai ete appelee avant
     // alors Math.random() donne le seed. Sinon l'appel a seed(mySeed) donne seed.
@@ -26,17 +39,6 @@ class RandomSeeded {
 }  // FIN class randomSeeded 
 // *******************************************************************
 
-// ****************************************************************
-//                      PARAMETRES MODIFIABLES
-// ****************************************************************
-let verbose = 0; // sur la console
-let margeHaut = 100, margeCentre = 20;
-let lCarte = 96,cCarte = 75; // les dim sont 75x96
-let espaceMonte = 20; // espace entrev la colonne ou on monte et ses voisines
-let seed = 1910298639;
-// ****************************************************************
-//                      FIN PARAMETRES MODIFIABLES
-// ****************************************************************
 // parametre de la tabelette ou ordi
 var isTouch = 'ontouchstart' in document.documentElement;
 let C = screen.width; // nombre de colonnes de pixels
@@ -202,6 +204,7 @@ function makeBordsDragabbles() {
 	    else
 		makeElementNonDraggable(elements[k]);
 	    bordVu = 1;
+	    elements[k].style.zIndex = -c;
 	} // fin for (let c=-20;c<0;c++)
 	bordVu = 0;	
  	for (let c=20;c>0;c--) {
@@ -214,6 +217,7 @@ function makeBordsDragabbles() {
 	    else
 		makeElementNonDraggable(elements[k]);
 	    bordVu = 1;
+	    elements[k].style.zIndex = c;
 	} // fin for (let c=20;c>0;c--)
     } // fin for(let l=0;l<5;l++)
 }  //FIN function makeBordsDragabbles() {
