@@ -10,6 +10,10 @@
 	width: 75px;
 	height: 96px;
     }
+    #seedId {
+	width: 75px;
+	text-align: center;
+    }	
   </style>
   
   <body>
@@ -69,8 +73,14 @@
     <div class="mydiv" id="49"> <img src="Js.gif"> </div> <!-- 49 -->
     <div class="mydiv" id="50"> <img src="Qs.gif"> </div> <!-- 50 -->
     <div class="mydiv" id="51"> <img src="Ks.gif"> </div> <!-- 51 -->
-    <p id="outZone"> </p>
 
+    <!-- <p id="outZone"> </p> -->
+    <form>
+      <label> Vous jouez la partie numero </label>
+      <input type="text" id="seedId" name="seedName" value="random" width="120px"> 
+      <label> Vous pouvez changer ce numero, ou laisser la champ vide
+      pour une parte aleatoire </label>
+    </form>
     <script src="myNewScript.js"></script>  
   </body>
 </html>

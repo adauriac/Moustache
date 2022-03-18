@@ -1,4 +1,32 @@
 
+class RandomSeeded {
+    // Si la fonction random() est appelee sans que seed() n'ai ete appelee avant
+    // alors Math.random() donne le seed. Sinon l'appel a seed(mySeed) donne seed.
+    // De toutes facons this.seedUsed contient le seed rellement utilise
+    constructor() {
+	this.seedUsed = Math.floor(Math.random()*4294967296);
+	this.mask = 0xffffffff;
+	this.seed(this.seedUsed);
+    } // fin constructor(seed) 
+ 
+    // This set the seed, Takes any integer
+    seed(i) {
+	this.seedUsed = i;
+	this.m_w = (123456789 + i) & this.mask;
+	this.m_z = (987654321 - i) & this.mask;
+    } // fin seed(i)
+
+    // Returns number between 0 (inclusive) and 1 (exclusive) //4294967296
+    // just like Math.random().
+    random() {
+	this.m_z = (36969 * (this.m_z & 65535) + (this.m_z >> 16)) & this.mask;
+	this.m_w = (18000 * (this.m_w & 65535) + (this.m_w >> 16)) & this.mask;
+	var result = ((this.m_z << 16) + (this.m_w & 65535)) >>> 0;
+	return result/4294967296;
+    } // fin random()
+}  // FIN class RandomSeeded 
+// *******************************************************************
+
 // ****************************************************************
 //                      PARAMETRES MODIFIABLES
 // ****************************************************************
@@ -7,6 +35,7 @@ let margeHaut = 100, margeCentre = 20;
 let lCarte = 96,cCarte = 75; // les dim sont 75x96
 let espaceMonte = 20; // espace entre la colonne ou on monte et ses voisines
 let chevauche = 40; // chevauchement des cartes
+let bandeauEnHaut = 50; // pour les boutons
 // ****************************************************************
 //                      FIN PARAMETRES MODIFIABLES
 // ****************************************************************
@@ -14,7 +43,13 @@ let chevauche = 40; // chevauchement des cartes
 var isTouch = 'ontouchstart' in document.documentElement;
 let C = screen.width; // nombre de colonnes de pixels
 let L = screen.height; // nombre de lignes de pixels
-document.getElementById("outZone").innerHTML = "C="+C+" L="+L+" isTouch="+isTouch;
+let seedSt= document.getElementById("seedId").value;
+let myRnd = new RandomSeeded();  // random Generator
+if (!isNaN(parseInt(seedSt)))
+    myRnd.seed(parseInt(seedSt));
+seed = myRnd.seedUsed;  // si c'etait -1 ce sera la valeur effectivement utilisee
+document.getElementById("seedId").value = myRnd.seedUsed;
+// document.getElementById("outZone").innerHTML = "C="+C+" L="+L+" isTouch="+isTouch;
 
 // declaration
 var num = new Array(5*(20+1+20)); // c'est le nom
@@ -25,15 +60,26 @@ let elements = document.getElementsByClassName("mydiv");
 for (let i = 0; elements[i]; i++)
      makeElementDraggable(elements[i]);
 
-poseLesCartesNonGraphique();
-asciiOut();
-showAllCardOnScreen();
-console.log("bye 3");
+//posePersoNonGraphique();
+
+
+vazy();
 // showOnScreen();
 //outZone += "en 0,1) "+ans
 // ************************************************************
 //            FUNCTIONS
 // ************************************************************
+function vazy() {
+    //document.getElementById("go").innerHTML="fini"
+    poseLesCartesNonGraphique();
+    asciiOut();
+    showAllCardOnScreen();
+    console.log("bye 3");
+}  // FIN function vazy()
+// ***********************************************************
+
+function min(x,y){return x<y ? x : y}
+function max(x,y){return x>y ? x : y}
 
 function asciiOut() {
     n0=0;
@@ -107,7 +153,7 @@ function shuffle(array) {
     // utilise l'algo de Fisher-Yates aka Knuth
     // les tests en freq. sont ok
     for (let i = array.length - 1; i > 0; i--) {
-	let j = Math.floor(Math.random() * (i + 1));
+	let j = Math.floor(myRnd.random() * (i + 1));
 	[array[i], array[j]] = [array[j], array[i]];
     }
 }  // FIN function shuffle(array)
@@ -127,6 +173,7 @@ function showOneCardOnScreen(carte,ligne,col) {
     else if (col>0)
 	X += espaceMonte - chevauche*(col-1);
     let Y = ligne*lCarte;
+    Y += bandeauEnHaut;
     elements[carte].style.left = X+"px"; // c'est la colonne
     elements[carte].style.top = Y+"px"; // c'est la ligne
     let z = (col<0) ? -col : col;
@@ -159,11 +206,20 @@ function dsQuelleColonneEstCurseur(x) {
 }  // FIN function dsQuelleColonneEstCurseur()
 // ******************************************************************
 
-function min(x,y){return x<y ? x : y}
-function max(x,y){return x>y ? x : y}
+function deQuelCoteEstCurseur(x) {
+    // retourne -1 pour gauche, 0 pour colonne centrale, 1 pour droit
+    let col=-1;
+    if ((C/2-cCarte/2<x-espaceMonte) && (x<C/2+cCarte/2+espaceMonte))
+	return 0;
+    if (x>C/2+cCarte/2+espaceMonte)
+	return 1;
+    return -1;
+}  // FIN function deQuelCoteEstCurseur(x)
+// ******************************************************************
 
 function dsQuelleLigneEstCurseur(y) {
     let lin=-1;
+    y -= bandeauEnHaut;
     lin = Math.floor((y-lCarte)/lCarte)+1;
     return lin;
 }  // FIN function dsQuelleLigneEstCurseur()
@@ -286,7 +342,7 @@ function makeElementDraggable(elmnt) {
 	let k = laColInitial<0 ? nbCartesGauche(laLigneInitial): nbCartesDroite(laLigneInitial);
 	k = k<0 ? -k : k;
 	let id = elmnt.id;
-	console.log("je prend "+id+" carteTraitee="+carteTraitee+" en ("+laLigneInitial+","+laColInitial+") indice="+indiceInitial);
+//	console.log("je prend "+id+" carteTraitee="+carteTraitee+" en ("+laLigneInitial+","+laColInitial+") indice="+indiceInitial);
 	// a t on le droit de prendre cette carte ?
 	if (k==zInitial) {
 	    elmnt.style.zIndex = 100;
@@ -321,43 +377,46 @@ function makeElementDraggable(elmnt) {
 	posFinX = e.clientX;
       	posFinY = e.clientY;
 	let laLigneFinal = dsQuelleLigneEstCurseur(e.pageY) ;
-	let laColFinal = dsQuelleColonneEstCurseur(e.pageX) ;
-	let nCarteGauche = nbCartesGauche(laLigneFinal);
-	let nCarteDroite = nbCartesDroite(laLigneFinal);
-	laColFinal = (laColFinal>0) ? min(laColFinal,nCarteDroite) : max(laColFinal,nCarteGauche);
-	let z = elmnt.style.zIndex;
-	let k = laColFinal<0 ? nbCartesGauche(laLigneFinal): nbCartesDroite(laLigneFinal);
-	k = k<0 ? -k : k;
-	let id = elmnt.id;
-	let indiceFinal = index(laLigneFinal,laColFinal);
-	carteTraitee = num[indiceFinal];	
-	let ok = valide(num[indiceInitial],num[indiceFinal],laLigneFinal,laColFinal);
-	console.log("je tente de la poser sur "+carteTraitee+" en ("+laLigneFinal+","+laColFinal+") indice="+indiceFinal+" ok="+ok);
+	let coteFinal = deQuelCoteEstCurseur(e.pageX) ; // cote duquel on va tenter de poser
+	let caseDest = 0;
+	if (coteFinal==0) {
+	    // colonne du milieu
+	    caseDest = index(laLigneFinal,0);
+	    if (num[caseDest]==-1)  // case vide : on ne peut poser qu'un as
+		ok = num[indiceInitial]%13==0;
+	    else
+		ok = num[indiceInitial]%13==(num[caseDest]%13)+1;
+	} else if (coteFinal==1) {
+	    // colonne  de droite
+	    caseDest = index(laLigneFinal,nbCartesDroite(laLigneFinal)+1);
+	    if (nbCartesDroite(laLigneFinal)==0) 
+		ok = (laLigneFinal==0); // on peut toujours su la ligne 0, jamais sinon
+	    else
+		ok = (num[caseDest-1]%13==(carteTraitee%13)+1) || (num[caseDest-1]%13==(carteTraitee%13)-1);
+	} else {
+	    // colonne de gauche
+	    caseDest = index(laLigneFinal,nbCartesGauche(laLigneFinal)-1);
+	    if (nbCartesGauche(laLigneFinal)==0) 
+		ok = (laLigneFinal==0); // on peut toujours su la ligne 0, jamais sinon
+	    else
+		ok = (num[caseDest+1]%13==num[indiceInitial]%13+1) || (num[caseDest+1]%13==num[indiceInitial]%13-1);
+	} // fin test de gauche/centre/droite
 	if (ok) {
-	    let carteDeplacee = getInPlaceNonGraphique(laLigneInitial,laColInitial);
-	    console.log("deplace "+carteDeplacee+" de "+laLigneInitial+" "+laColInitial+" "+laLigneFinal+" "+laColFinal);
 	    num[index(laLigneInitial,laColInitial)] = -1; // plus de carte en initial
-	    if (laColFinal!=0) // au centre on pose dessus
-		laColFinal+=(laColFinal<0 ? -1 : 1); // sinon on pose gauche ou droite
-	    num[index(laLigneFinal,laColFinal)] = carteDeplacee; // donc par-dessus si en col 0
+	    num[caseDest] = carteTraitee; // elle est mise en Dest
 	    showAllCardOnScreen();
 	} else {
 	    elmnt.style.top = topInitial;
       	    elmnt.style.left = leftInitial;
 	    elmnt.style.zIndex = zInitial;
 	}
-	// a t on le droit de prendre cette carte ?
-      	//console.log("release. depuis ",posInitX,posInitY," vers ",posFinX,posFinY);
     }  // FIN  function closeDragElement()
 } // FIN function makeElementDraggable(elmnt)
 // *******************************************************************
 
 function valide(carteDeplacee,carteRecouverte,lineDest,colDest) {
-    // onpeut tout mettre dans la moustache
-    if (lineDest==0) {
-	if ((colDest==1) || (colDest==-1))
-	    return true; // on peut tout mettre dans la moustache en premiere colonne
-    }
+    if (colDest==0) // en colonne 1 on peut mettre tjs en col=0, jamais sinon
+	return  (lineDest==0);
     let coulDeplacee=Math.floor(carteDeplacee/13);
     let coulRecouverte=Math.floor(carteRecouverte/13);
     let valDeplacee=carteDeplacee%13;
@@ -372,3 +431,25 @@ function valide(carteDeplacee,carteRecouverte,lineDest,colDest) {
     return (valDeplacee==valRecouverte-1) || (valDeplacee==valRecouverte+1); 
 }  // FIN function valide(carteDeplacee,carteRecouverte,lineDest,colDest)
 // *******************************************************************
+
+function posePersoNonGraphique() {
+    num.fill(-1);
+    num [index(0,-1)] = 7;
+    num [index(0,-2)] = 23;
+    
+    num [index(1,-1)] = 27;
+    num [index(1,1)] = 24;
+    num [index(1,2)] = 29;
+
+    num [index(2,-1)] = 34;
+    num [index(2,-2)] = 35;
+    num [index(2,-3)] = 33;
+    num [index(2,1)] = 44;
+    num [index(2,2)] = 45;
+    num [index(2,3)] = 46;
+    
+    num [index(3,-1)] = 28;
+
+}  // FIN function posePersoNonGraphique() 
+// ************************************************************
+
