@@ -30,6 +30,7 @@ class RandomSeeded {
 // ****************************************************************
 //                      PARAMETRES MODIFIABLES
 // ****************************************************************
+console.log("debut du script");
 let verbose = 0; // sur la console
 let margeHaut = 100, margeCentre = 20;
 let lCarte = 96,cCarte = 75; // les dim sont 75x96
@@ -58,17 +59,58 @@ num.fill(-1);
 //Make the DIV element draggagle:
 let elements = document.getElementsByClassName("mydiv");
 for (let i = 0; elements[i]; i++)
-     makeElementDraggable(elements[i]);
+    makeElementDraggable(elements[i]);
+var tour = 1;
+poseLesCartesNonGraphique();
+asciiOut();
+showAllCardOnScreen();
+console.log("bye fin tour 1");
 
-//posePersoNonGraphique();
-
-
-vazy();
-// showOnScreen();
-//outZone += "en 0,1) "+ans
 // ************************************************************
 //            FUNCTIONS
 // ************************************************************
+function nextTour() {
+    console.log("debute tour "+tour);
+    reposeLesCartesNonGraphique();
+    asciiOut();
+    showAllCardOnScreen();
+    console.log("bye fin tour "+tour);
+}  // fin nextTour
+// ***********************************************************
+
+function reposeLesCartesNonGraphique() {
+    const reste = [];
+    for(let l=1;l<5;l++) {
+	for (let c=-20;c<=20;c++) {
+	    if (c==0)
+		continue;
+	    let i = index(l,c);
+	    let k = num[index(l,c)];
+	    if (k==-1) // donc pas de carte
+		continue;
+	    reste.push(k);
+	    num[i]= -1;
+	}
+    }
+    shuffle(reste);
+    let col = -1;
+    let line = 1;
+    for (let i=0;i<reste.length;i++) {
+	num[index(line,col)] = reste[i];
+	line++;
+	if (line==5) { 
+	    line = 1;
+	    if (col<0)
+		col = -col;
+	    else 
+		col = -col-1;
+	}
+    }
+    asciiOut();
+    showAllCardOnScreen();
+}  // FIN function reposeLesCartesNonGraphique()
+// ************************************************************
+
 function vazy() {
     //document.getElementById("go").innerHTML="fini"
     poseLesCartesNonGraphique();
@@ -145,6 +187,7 @@ function poseLesCartesNonGraphique() {
 		curC = -curC-1;
 	}
     } // fin for(int i=0;i<52
+    tour++;
 }  // FIN function poseLesCartesNonGraphique()
 // *******************************************************************
 
