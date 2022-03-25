@@ -3,14 +3,16 @@
 // ****************************************************************
 let verbose = 0; // sur la console
 let margeHaut = 100, margeCentre = 20;
-let lCarte = 96,cCarte = 75; // les dim sont 75x96
+let lCarte0 = 96,cCarte0 = 75; // les dim sont 75x96
+let overlapCarte = 0;
 //cCarte = 30; // l'overlap sera 75-cCarte
 let espaceMonte = 20; // espace entrev la colonne ou on monte et ses voisines
 let seed = 1910298639;
 // ****************************************************************
 //                      FIN PARAMETRES MODIFIABLES
 // ****************************************************************
-
+let lCarte = lCarte0;
+let cCarte = cCarte0-overlapCarte;
 class RandomSeeded {
     // Si la fonction random() est appelee sans que seed() n'ai ete appelee avant
     // alors Math.random() donne le seed. Sinon l'appel a seed(mySeed) donne seed.
@@ -43,6 +45,10 @@ class RandomSeeded {
 var isTouch = 'ontouchstart' in document.documentElement;
 let C = screen.width; // nombre de colonnes de pixels
 let L = screen.height; // nombre de lignes de pixels
+elementFond = document.getElementById("fond");
+elementFond.style.width = C+"px";
+elementFond.style.height = L+"px";
+elementFond.onmousedown = onMouseDownFond;
 // document.getElementById("outZone").innerHTML = "C="+C+" L="+L+" isTouch="+isTouch;
 
 // declaration
@@ -233,9 +239,9 @@ function showOneCardScreen(carte,ligne,col) {
     // ici la carte et la position sont oks
     let X = C/2-cCarte/2 + col*cCarte;
     if (col<0)
-	X -= espaceMonte;
+	X -= espaceMonte+overlapCarte;
     else if (col>0)
-	X += espaceMonte;
+	X += espaceMonte+overlapCarte;
     let Y = ligne*lCarte;
     elements[carte].style.left = X+"px"; // c'est la colonne
     elements[carte].style.top = Y+"px"; // c'est la ligne
@@ -276,21 +282,11 @@ function getInPlace(l,c) { //quoi en l,c
 
 function putInPlace(k,l,c) { //quoi en l,c
     if ((l<0) || (l>4) || (c<-20) || (c>20))
-	alert("oops putInPlace on demande une carte hors table ! l,c="+l+","+c);
+	alert("oops putInPlace on demande une carte hors table ! l,c= "+l+","+c);
     if ((k<0-1) || (k>51))
-	alert("oops putInPlace on veut placer une carte qui n'existe pas !"+k);
+	alert("oops putInPlace on veut placer une carte qui n'existe pas ! "+k);
     num[(20+1+20)*l+(c+20)] = k;
-} // FIN whatInPlace
-// *******************************************************************
-
-function cartePosFromMousePos(posX,posY) {
-    // retourne [ligne,colonne] a partir de la position (poxX,posY) en pixels
-    let marginDelta = (posX > C/2) ? margeCentre : -margeCentre;
-    let k = Math.floor((posX - marginDelta - C/2 +cCarte/2)/cCarte);
-    let q = Math.floor((posY-margeHaut)/lCarte);
-    // document.getElementById("outZone").innerHTML = "Ex="+posInitX+ " C/2="+C/2+" k="+k+" q="+q;
-    return [q,k];
-}  // FIN function cartePosFromMousePos(posX,posY)
+} // FIN putInPlace
 // *******************************************************************
 
 function casePosFromMousePos(posInitX,posInitY) {
@@ -304,7 +300,7 @@ function casePosFromMousePos(posInitX,posInitY) {
 	col = Math.floor( (posInitX-(C/2+cCarte/2+margeCentre))/cCarte) + 1;
     let ligne = Math.floor(posInitY/lCarte);
     return [ligne,col];
-}  // FIN function casePosFromMousePos(posX,posY)
+}  // FIN function casePosFromMousePos(posInitX,posInitY)
 // *******************************************************************
 
 function cartesConsecutives(avant,apres) { // vrai si meme couleur et apres=avant+1
@@ -334,7 +330,10 @@ function mettable(carte,line,col) {
     let colVois=0;
     if (col<0)
 	colVois = col+1;
-    else
+    else    elmnt.onmousedown = null;
+    elmnt.onmouseup = null;
+    elmnt.onmousemove = null;
+
 	colVois = col-1;
     voisine = getInPlace(line,colVois);
     if (voisine==-1)
@@ -370,6 +369,15 @@ function nextTour() {
 }  // FIN function nextTour()
 // *******************************************************************
 
+function onMouseDownFond(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos3 = e.pageX;
+    pos4 = e.pageY;
+    console.log("onMouseDownFond : "+pos3+" "+pos4);
+}   // FIN function onMouseDownFond(e)
+// ********************************************************************
+
 function makeElementDraggable(elmnt) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     var posInitX=0,posInitY=0,posFinX=0,posFinY=0;
@@ -385,10 +393,21 @@ function makeElementDraggable(elmnt) {
       	// get the mouse cursor position at startup:
       	pos3 = e.clientX;
       	pos4 = e.clientY;
+	elementMouseIsOver = document.elementFromPoint(pos3, pos4)
+	name = elementMouseIsOver.attributes.src.nodeValue;
+	console.log(name);
 	posInitX = e.pageX;
       	posInitY = e.pageY;
 	[lineInit,colInit] =  casePosFromMousePos(posInitX,posInitY);
 	k = getInPlace(lineInit,colInit);  //c'est la carte k que l'on promene
+	elements[k].style.zIndex += 10;
+	// posInitX = e.pageX;
+      	// posInitY = e.pageY;
+	// [lineInit,colInit] =  casePosFromMousePos(posInitX,posInitY);
+	// k = getInPlace(lineInit,colInit);  //c'est la carte k que l'on promene
+	// if (k==-1)
+	//     alert("dragMouseDown: oops k= "+k);
+	// console.log("k= "+k+" name= "+name)
       	document.onmouseup = closeDragElement;
       	// call a function whenever the cursor moves:
       	document.onmousemove = elementDrag;
@@ -413,11 +432,16 @@ function makeElementDraggable(elmnt) {
       	e.preventDefault(); // rajoute par JC
       	document.onmouseup = null;
       	document.onmousemove = null;
+	elements[k].style.zIndex -= 10;
+	elementMouseIsOver = document.elementFromPoint(e.clientX, e.clientY)
+	name = elementMouseIsOver.attributes.src.nodeValue;
+	console.log(name);
+	return;
 	posFinX = e.clientX;
       	posFinY = e.clientY;
  	[lineFin,colFin] =  casePosFromMousePos(posFinX,posFinY);
 	// Puis-je placer cette carte ici ?
-	let ok = (colInit!=0) && mettable(k,lineFin,colFin);
+	let ok = 0;//(colInit!=0) && mettable(k,lineFin,colFin);
 	if (ok) {
 	    putInPlace(-1,lineInit,colInit); // plus rien en lineInit,colInit
 	    putInPlace(k,lineFin,colFin); // k affecte lors du mouse down
