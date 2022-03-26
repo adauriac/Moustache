@@ -61,7 +61,8 @@ let elements = document.getElementsByClassName("mydiv");
 for (let i = 0; elements[i]; i++)
     makeElementDraggable(elements[i]);
 var tour = 1;
-poseLesCartesNonGraphique();
+//poseLesCartesNonGraphique();
+posePersoNonGraphique();
 asciiOut();
 showAllCardOnScreen();
 console.log("bye fin tour 1");
@@ -69,13 +70,18 @@ console.log("bye fin tour 1");
 // ************************************************************
 //            FUNCTIONS
 // ************************************************************
+function min(x,y){return x<y ? x : y}
+function max(x,y){return x>y ? x : y}
+function couleur(carte) {return Math.floor(carte/13);} // ce sera 0:d/1:c/2:h/3:s
+function valeur(carte) {return carte%13;} // 0:As/1:2/2:3/ ... /9:10/10:valet/11:reine//12:roi
+
 function nextTour() {
     console.log("debute tour "+tour);
     reposeLesCartesNonGraphique();
     asciiOut();
     showAllCardOnScreen();
     console.log("bye fin tour "+tour);
-}  // fin nextTour
+}  // FIN function nextTour()
 // ***********************************************************
 
 function reposeLesCartesNonGraphique() {
@@ -120,9 +126,6 @@ function vazy() {
 }  // FIN function vazy()
 // ***********************************************************
 
-function min(x,y){return x<y ? x : y}
-function max(x,y){return x>y ? x : y}
-
 function asciiOut() {
     n0=0;
     for(let l=1;l<5;l++)
@@ -130,7 +133,7 @@ function asciiOut() {
 	    n0 += 1
     oo=""
     for (let l=0;l<5;l++) {
-	for(let c=-6;c<=6;c++) {
+	for(let c=-20;c<=20;c++) {
 	    let k = getInPlaceNonGraphique(l,c);
 	    if (c==1)
 		oo += " ";
@@ -221,12 +224,6 @@ function showOneCardOnScreen(carte,ligne,col) {
     elements[carte].style.top = Y+"px"; // c'est la ligne
     let z = (col<0) ? -col : col;
     elements[carte].style.zIndex = z;
-    //alert("style.z-index "+elements[carte].style.z-index);  //plante
-    //alert("style.zIndex "+elements[carte].style.zIndex); // vide
-    //alert(".z-index "+elements[carte].z-index); // plante
-    //alert(".zIndex "+elements[carte].zIndex); // vide
-
-    //elements[carte].style.Zindex = z;
 }  // FIN function showOneCardOnOnScreen(carte,ligne,col) 
 // *******************************************************************
 
@@ -285,7 +282,7 @@ function getInPlaceNonGraphique(l,c) { //quoi en l,c
     if ((l<0) || (l>4) || (c<-20) || (c>20))
 	alert("oops on demande une carte hors table !");
     return num[index(l,c)];
-} // FIN whatInPlace
+} // FIN function getInPlaceNonGraphique(l,c) 
 // *******************************************************************
 
 function index(l,c) {
@@ -299,7 +296,7 @@ function putInPlaceNonGraphique(k,l,c) { //quoi en l,c
     if ((k<0-1) || (k>51))
 	alert("oops on veut placer une carte qui n'existe pas !");
     num[index(l,c)] = k;
-} // FIN whatInPlace
+} // FIN function putInPlaceNonGraphique(k,l,c)
 // *******************************************************************
 
 function cartePosFromMousePos(posX,posY) {
@@ -396,7 +393,7 @@ function makeElementDraggable(elmnt) {
      	    document.onmouseup = null;
       	    document.onmousemove = null;
 	}
-    } // FIN  function onMouseDown(e)
+    } // FIN function onMouseDown(e)
     
     function elementDrag(e) {
       	e = e || window.event;
@@ -409,7 +406,7 @@ function makeElementDraggable(elmnt) {
       	// set the element's new position:
       	elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
       	elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    } // FIN elementDrag(e)
+    } // FIN function elementDrag(e)
 
     function closeDragElement(e) {
       	/* stop moving when mouse button is released:*/
@@ -426,9 +423,10 @@ function makeElementDraggable(elmnt) {
 	    // colonne du milieu
 	    caseDest = index(laLigneFinal,0);
 	    if (num[caseDest]==-1)  // case vide : on ne peut poser qu'un as
-		ok = num[indiceInitial]%13==0;
+		ok = valeur(carteTraitee)==0;
 	    else
-		ok = num[indiceInitial]%13==(num[caseDest]%13)+1;
+		ok = (valeur(carteTraitee)==valeur(num[caseDest])+1) &&
+		(couleur(carteTraitee)==couleur(num[caseDest]))
 	} else if (coteFinal==1) {
 	    // colonne  de droite
 	    caseDest = index(laLigneFinal,nbCartesDroite(laLigneFinal)+1);
@@ -448,50 +446,119 @@ function makeElementDraggable(elmnt) {
 	    num[index(laLigneInitial,laColInitial)] = -1; // plus de carte en initial
 	    num[caseDest] = carteTraitee; // elle est mise en Dest
 	    showAllCardOnScreen();
+	    check();
 	} else {
 	    elmnt.style.top = topInitial;
       	    elmnt.style.left = leftInitial;
 	    elmnt.style.zIndex = zInitial;
 	}
-    }  // FIN  function closeDragElement()
+    }  // FIN function closeDragElement()
 } // FIN function makeElementDraggable(elmnt)
 // *******************************************************************
 
-function valide(carteDeplacee,carteRecouverte,lineDest,colDest) {
-    if (colDest==0) // en colonne 1 on peut mettre tjs en col=0, jamais sinon
-	return  (lineDest==0);
-    let coulDeplacee=Math.floor(carteDeplacee/13);
-    let coulRecouverte=Math.floor(carteRecouverte/13);
-    let valDeplacee=carteDeplacee%13;
-    let valRecouverte=carteRecouverte%13;
-    if (carteRecouverte==-1)  // c'est donc un as ou une erreur !
-	coulRecouverte = coulDeplacee;
-    if (coulDeplacee!=coulRecouverte)
-	return false;
-    // ici les 2 cartes sont de la meme couleur
-    if (colDest==0)
-	return (valDeplacee==0)|| (valDeplacee==valRecouverte+1); // au centre ca doit croitre de 1
-    return (valDeplacee==valRecouverte-1) || (valDeplacee==valRecouverte+1); 
-}  // FIN function valide(carteDeplacee,carteRecouverte,lineDest,colDest)
+function check() {
+    // return 0 si Ok et un code d'erreur>0 refletant les fifferents cas
+    var vu = new Array(52); // les cartes effectivement presentes
+    vu.fill(0);
+    for(let l=0;l<5;l++) {
+	for(let c=-20;c<20;c++) {
+	    let k = num[index(l,c)];
+	    if (k==-1) // Pas une carte
+		continue;
+	    if (c==0) {
+		// traitement special de la colonne du milieu
+		let coul = Math.floor(k/13);
+		let val = k%13;
+		for(let v=0;v<=val;v++)
+		    vu[coul*13 + v] ++;
+	    } else 
+		vu[k]++;
+	}
+    }
+    // ici on a compte l'occurence de chaque carte
+    var errStr = "";
+    for (let i=0;i<52;i++)
+	if (vu[i]!=1) 
+	    errStr+= "check: "+i+" apparait "+vu[i]+" fois\n";
+    if (errStr!=""){
+	alert(errStr);
+	return 1;
+    }
+    // so far so good, testons les trous dans les lignes
+    for (let l=0;l<5;l++) {
+	for (let c=-1;c>=-nbCartesGauche(l);c--)
+	    if (num[index(l,c)]==-1) 
+		errStr += "une carte mal placee en l,c="+l+","+c+"\n";
+	for (let c=1;c<=nbCartesDroite(l);c++)
+	if (num[index(l,c)]==-1) 
+		errStr += "check: une carte mal placee en l,c="+l+","+c+"\n";
+	}
+    if (errStr!=""){
+	alert(errStr);
+	return 2;
+    }
+    return 0;
+}  // FIN function check()
 // *******************************************************************
 
 function posePersoNonGraphique() {
+    // bug trouve par JA
     num.fill(-1);
-    num [index(0,-1)] = 7;
-    num [index(0,-2)] = 23;
+// ligne 0
+    num [index(0,-4)] = 9;
+    num [index(0,-3)] = 8;
+    num [index(0,-2)] = 7;
+    num [index(0,-1)] = 6;
     
-    num [index(1,-1)] = 27;
-    num [index(1,1)] = 24;
-    num [index(1,2)] = 29;
-
-    num [index(2,-1)] = 34;
-    num [index(2,-2)] = 35;
-    num [index(2,-3)] = 33;
-    num [index(2,1)] = 44;
-    num [index(2,2)] = 45;
-    num [index(2,3)] = 46;
+    num [index(0,1)] = 38;
+// ligne 1
+    num [index(1,-4)] = 17;
+    num [index(1,-3)] = 31;
+    num [index(1,-2)] = 46;
+    num [index(1,-1)] = 25;
     
-    num [index(3,-1)] = 28;
+    num [index(1,0)] = 5;
+    
+    num [index(1,1)] = 32;
+    num [index(1,2)] = 44;
+    num [index(1,3)] = 23;
+    num [index(1,4)] = 24;
+// ligne 2
+    num [index(2,-4)] = 18;
+    num [index(2,-3)] = 50;
+    num [index(2,-2)] = 49;
+    num [index(2,-1)] = 47;
+    
+    num [index(2,0)] = 13;
+    
+    num [index(2,1)] = 15;
+    num [index(2,2)] = 30;
+    num [index(2,3)] = 33;
+    num [index(2,4)] = 12;
+// ligne 3
+    num [index(3,-4)] = 14;
+    num [index(3,-3)] = 20;
+    num [index(3,-2)] = 43;
+    num [index(3,-1)] = 19;
+    
+    num [index(3,0)] = 42;
+    
+    num [index(3,1)] = 45;
+    num [index(3,2)] = 16;
+    num [index(3,3)] = 11;
+    num [index(3,4)] = 34;
+// ligne 4
+    num [index(4,-4)] = 36;
+    num [index(4,-3)] = 35;
+    num [index(4,-2)] = 21;
+    num [index(4,-1)] = 48;
+    
+    num [index(4,0)] = 29;
+    
+    num [index(4,1)] = 10;
+    num [index(4,2)] = 22;
+    num [index(4,3)] = 37;
+    num [index(4,4)] = 51;
 
 }  // FIN function posePersoNonGraphique() 
 // ************************************************************
