@@ -418,7 +418,23 @@ function makeElementDraggable(elmnt) {
       	posFinY = e.clientY;
 	let laLigneFinal = dsQuelleLigneEstCurseur(e.pageY) ;
 	let coteFinal = deQuelCoteEstCurseur(e.pageX) ; // cote duquel on va tenter de poser
-	let caseDest = 0;
+	let caseDest = isOK(coteFinal,laLigneFinal,carteTraitee);
+	if (caseDest!=-1) {
+	    num[index(laLigneInitial,laColInitial)] = -1; // plus de carte en initial
+	    num[caseDest] = carteTraitee; // elle est mise en Dest
+	    showAllCardOnScreen();
+	    check();
+	} else {
+	    elmnt.style.top = topInitial;
+      	    elmnt.style.left = leftInitial;
+	    elmnt.style.zIndex = zInitial;
+	}
+    }  // FIN function closeDragElement()
+    // *********************************************************************
+
+    function isOK(coteFinal,laLigneFinal,carteTraitee) {
+	// retourne la case destination si ok et -1 si pas ok
+	let caseDest=-1;
 	if (coteFinal==0) {
 	    // colonne du milieu
 	    caseDest = index(laLigneFinal,0);
@@ -442,17 +458,11 @@ function makeElementDraggable(elmnt) {
 	    else
 		ok = (num[caseDest+1]%13==num[indiceInitial]%13+1) || (num[caseDest+1]%13==num[indiceInitial]%13-1);
 	} // fin test de gauche/centre/droite
-	if (ok) {
-	    num[index(laLigneInitial,laColInitial)] = -1; // plus de carte en initial
-	    num[caseDest] = carteTraitee; // elle est mise en Dest
-	    showAllCardOnScreen();
-	    check();
-	} else {
-	    elmnt.style.top = topInitial;
-      	    elmnt.style.left = leftInitial;
-	    elmnt.style.zIndex = zInitial;
-	}
-    }  // FIN function closeDragElement()
+	console.log("inside isOk caseDst="+caseDest);
+	if (!ok)
+	    caseDest = -1;
+	return caseDest;
+    } // FIN function isOk()
 } // FIN function makeElementDraggable(elmnt)
 // *******************************************************************
 
