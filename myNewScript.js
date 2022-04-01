@@ -290,6 +290,14 @@ function index(l,c) {
 }  // FIN function index(l,c)
 // *******************************************************************
 
+function enClair(carte) {
+    // retourne une string representant la carte
+    let lesCouls = ["carreau","trefle","coeur","pique"];
+    let lesValeurs = ["as","2","3","4","5","6","7","8","9","10","valet","dame","roi"];
+    return lesValeurs[valeur(carte)]+" de "+lesCouls[couleur(carte)];
+}  //FIN function enClair(carte)
+// *******************************************************************
+
 function putInPlaceNonGraphique(k,l,c) { //quoi en l,c
     if ((l<0) || (l>4) || (c<-20) || (c>20))
 	alert("oops on demande une carte hors table !");
@@ -434,6 +442,9 @@ function makeElementDraggable(elmnt) {
 
     function isOK(coteFinal,laLigneFinal,carteTraitee) {
 	// retourne la case destination si ok et -1 si pas ok
+	let message = "deplacemt de "+enClair(carteTraitee);
+	alert(message);
+	let coulTraitee = couleur(carteTraitee);
 	let caseDest=-1;
 	if (coteFinal==0) {
 	    // colonne du milieu
@@ -443,25 +454,27 @@ function makeElementDraggable(elmnt) {
 	    else
 		ok = (valeur(carteTraitee)==valeur(num[caseDest])+1) &&
 		(couleur(carteTraitee)==couleur(num[caseDest]))
-	} else if (coteFinal==1) {
+	    return ok ? caseDest : -1;
+	}
+	if (coteFinal==1) {
 	    // colonne  de droite
 	    caseDest = index(laLigneFinal,nbCartesDroite(laLigneFinal)+1);
 	    if (nbCartesDroite(laLigneFinal)==0) 
-		ok = (laLigneFinal==0); // on peut toujours su la ligne 0, jamais sinon
-	    else
-		ok = (num[caseDest-1]%13==(carteTraitee%13)+1) || (num[caseDest-1]%13==(carteTraitee%13)-1);
+		return (laLigneFinal==0); // on peut toujours su la ligne 0, jamais sinon
+	    // ici il y a des cartes sur la ligne de destination
+	    ok = ((valeur(num[caseDest-1])==valeur(carteTraitee)+1) || (valeur(num[caseDest-1])==valeur(carteTraitee)-1));
+	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest-1]));
+	   
 	} else {
 	    // colonne de gauche
 	    caseDest = index(laLigneFinal,nbCartesGauche(laLigneFinal)-1);
 	    if (nbCartesGauche(laLigneFinal)==0) 
-		ok = (laLigneFinal==0); // on peut toujours su la ligne 0, jamais sinon
-	    else
-		ok = (num[caseDest+1]%13==num[indiceInitial]%13+1) || (num[caseDest+1]%13==num[indiceInitial]%13-1);
+		return (laLigneFinal==0); // on peut toujours su la ligne 0, jamais sinon
+	    // ici il y a des cartes sur la ligne de destination
+	    ok = ((valeur(num[caseDest+1])==valeur(carteTraitee)+1) || (valeur(num[caseDest+1])==valeur(carteTraitee)-1));
+	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest+1]));
 	} // fin test de gauche/centre/droite
-	console.log("inside isOk caseDst="+caseDest);
-	if (!ok)
-	    caseDest = -1;
-	return caseDest;
+	return ok ? caseDest : -1;
     } // FIN function isOk()
 } // FIN function makeElementDraggable(elmnt)
 // *******************************************************************
