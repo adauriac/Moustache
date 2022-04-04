@@ -61,10 +61,11 @@ let elements = document.getElementsByClassName("mydiv");
 for (let i = 0; elements[i]; i++)
     makeElementDraggable(elements[i]);
 var tour = 1;
-//poseLesCartesNonGraphique();
-posePersoNonGraphique();
+poseLesCartesNonGraphique();
+//posePersoNonGraphique();
 asciiOut();
 showAllCardOnScreen();
+work(num);
 console.log("bye fin tour 1");
 
 // ************************************************************
@@ -74,6 +75,7 @@ function min(x,y){return x<y ? x : y}
 function max(x,y){return x>y ? x : y}
 function couleur(carte) {return Math.floor(carte/13);} // ce sera 0:d/1:c/2:h/3:s
 function valeur(carte) {return carte%13;} // 0:As/1:2/2:3/ ... /9:10/10:valet/11:reine//12:roi
+function karte(val,coul) {return coul*13+val;}
 
 function nextTour() {
     console.log("debute tour "+tour);
@@ -169,8 +171,10 @@ function poseLesCartesNonGraphique() {
     let curC = -1;
     for(let i=0;i<52;i++) {
 	let j = P[i];
-	let val = j%13;
-	let coul = (j-val)/13;
+	//	let val = j%13;
+	//	let coul = (j-val)/13;
+	let val = valeur(j);
+	let coul = couleur(j);
 	let k;
 	if ((val==0) && (curL!=0) ) { // si un as et pas ligne 0 (moustache)
 	    k = getInPlaceNonGraphique(curL,0);
@@ -279,8 +283,10 @@ function showAllCardOnScreen() {
 // *******************************************************************
 
 function getInPlaceNonGraphique(l,c) { //quoi en l,c
-    if ((l<0) || (l>4) || (c<-20) || (c>20))
-	alert("oops on demande une carte hors table !");
+    if ((l<0) || (l>4) || (c<-20) || (c>20)) {
+	alert("oops on demande une carte hors table 1 !");
+	return -1;
+    }
     return num[index(l,c)];
 } // FIN function getInPlaceNonGraphique(l,c) 
 // *******************************************************************
@@ -299,8 +305,10 @@ function enClair(carte) {
 // *******************************************************************
 
 function putInPlaceNonGraphique(k,l,c) { //quoi en l,c
-    if ((l<0) || (l>4) || (c<-20) || (c>20))
-	alert("oops on demande une carte hors table !");
+    if ((l<0) || (l>4) || (c<-20) || (c>20)) {
+	alert("oops on demande une carte hors table 2 !");
+	return -1;
+    }
     if ((k<0-1) || (k>51))
 	alert("oops on veut placer une carte qui n'existe pas !");
     num[index(l,c)] = k;
@@ -427,12 +435,14 @@ function makeElementDraggable(elmnt) {
 	let laLigneFinal = dsQuelleLigneEstCurseur(e.pageY) ;
 	let coteFinal = deQuelCoteEstCurseur(e.pageX) ; // cote duquel on va tenter de poser
 	let caseDest = isOK(coteFinal,laLigneFinal,carteTraitee);
-	if (caseDest!=-1) {
+	if ((typeof caseDest) == "number") {
 	    num[index(laLigneInitial,laColInitial)] = -1; // plus de carte en initial
 	    num[caseDest] = carteTraitee; // elle est mise en Dest
 	    showAllCardOnScreen();
 	    check();
+	    work(num);// ici on a la nouvelle position acceptee
 	} else {
+	    alert(caseDest);
 	    elmnt.style.top = topInitial;
       	    elmnt.style.left = leftInitial;
 	    elmnt.style.zIndex = zInitial;
@@ -441,9 +451,47 @@ function makeElementDraggable(elmnt) {
     // *********************************************************************
 
     function isOK(coteFinal,laLigneFinal,carteTraitee) {
-	// retourne la case destination si ok et -1 si pas ok
+	// retourne la case destination si ok ou
+	// une string decrivant l'erreur sinon
 	let message = "deplacemt de "+enClair(carteTraitee);
-	alert(message);
+	// alert(message);
+	let coulTraitee = couleur(carteTraitee);
+	let caseDest=-1;
+	if (coteFinal==0) {
+	    // colonne du milieu
+	    caseDest = index(laLigneFinal,0);
+	    if (num[caseDest]==-1)  // case vide : on ne peut poser qu'un as
+		return valeur(carteTraitee)==0 ? caseDest: "on ne peut poser qu'un as ici";
+	    // case non vide
+	    ok = (valeur(carteTraitee)==valeur(num[caseDest])+1) &&
+		(couleur(carteTraitee)==couleur(num[caseDest]))
+	    return ok ? caseDest : carteTraitee+" ne matche pas sur colonne centrale";
+	}
+	if (coteFinal==1) {
+	    // colonne  de droite
+	    caseDest = index(laLigneFinal,nbCartesDroite(laLigneFinal)+1);
+	    if (nbCartesDroite(laLigneFinal)==0) 
+		return (laLigneFinal==0)?caseDest : "on ne peut poser une carte sur sur la premiere colonne qu'en moustache"; 
+	    // ici il y a des cartes sur la ligne de destination
+	    ok = ((valeur(num[caseDest-1])==valeur(carteTraitee)+1) || (valeur(num[caseDest-1])==valeur(carteTraitee)-1));
+	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest-1]));
+	} else {
+	    // colonne de gauche
+	    caseDest = index(laLigneFinal,nbCartesGauche(laLigneFinal)-1);
+	    if (nbCartesGauche(laLigneFinal)==0) 
+		return (laLigneFinal==0)?caseDest : "on ne peut poser une carte sur sur la premiere colonne qu'en moustache";
+	    // ici il y a des cartes sur la ligne de destination
+	    ok = ((valeur(num[caseDest+1])==valeur(carteTraitee)+1) || (valeur(num[caseDest+1])==valeur(carteTraitee)-1));
+	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest+1]));
+	} // fin test de gauche/centre/droite
+	return ok ? caseDest : enClair(carteTraitee)+ " ne peut aller "+caseDest;
+    } // FIN function isOK()
+
+    function isOKSaved(coteFinal,laLigneFinal,carteTraitee) {
+	// retourne la case destination si ok ou
+	// une string decrivant l'erreur sinon
+	let message = "deplacemt de "+enClair(carteTraitee);
+	// alert(message);
 	let coulTraitee = couleur(carteTraitee);
 	let caseDest=-1;
 	if (coteFinal==0) {
@@ -460,7 +508,7 @@ function makeElementDraggable(elmnt) {
 	    // colonne  de droite
 	    caseDest = index(laLigneFinal,nbCartesDroite(laLigneFinal)+1);
 	    if (nbCartesDroite(laLigneFinal)==0) 
-		return (laLigneFinal==0); // on peut toujours su la ligne 0, jamais sinon
+		return (laLigneFinal==0)?caseDest : -1; // on peut toujours su la ligne 0, jamais sinon
 	    // ici il y a des cartes sur la ligne de destination
 	    ok = ((valeur(num[caseDest-1])==valeur(carteTraitee)+1) || (valeur(num[caseDest-1])==valeur(carteTraitee)-1));
 	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest-1]));
@@ -469,13 +517,13 @@ function makeElementDraggable(elmnt) {
 	    // colonne de gauche
 	    caseDest = index(laLigneFinal,nbCartesGauche(laLigneFinal)-1);
 	    if (nbCartesGauche(laLigneFinal)==0) 
-		return (laLigneFinal==0); // on peut toujours su la ligne 0, jamais sinon
+		return (laLigneFinal==0)?caseDest : -1; // on peut toujours su la ligne 0, jamais sinon
 	    // ici il y a des cartes sur la ligne de destination
 	    ok = ((valeur(num[caseDest+1])==valeur(carteTraitee)+1) || (valeur(num[caseDest+1])==valeur(carteTraitee)-1));
 	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest+1]));
 	} // fin test de gauche/centre/droite
 	return ok ? caseDest : -1;
-    } // FIN function isOk()
+    } // FIN function isOKSaved()
 } // FIN function makeElementDraggable(elmnt)
 // *******************************************************************
 
@@ -490,8 +538,12 @@ function check() {
 		continue;
 	    if (c==0) {
 		// traitement special de la colonne du milieu
-		let coul = Math.floor(k/13);
-		let val = k%13;
+		// let coul = Math.floor(k/13);
+		// let val = k%13;
+		// for(let v=0;v<=val;v++)
+		//     vu[coul*13 + v] ++;
+		let coul = couleur(k);
+		let val = valeur(k);
 		for(let v=0;v<=val;v++)
 		    vu[coul*13 + v] ++;
 	    } else 
@@ -502,7 +554,7 @@ function check() {
     var errStr = "";
     for (let i=0;i<52;i++)
 	if (vu[i]!=1) 
-	    errStr+= "check: "+i+" apparait "+vu[i]+" fois\n";
+	    errStr+= "check: "+i+" = "+enClair(i)+" apparait "+vu[i]+" fois\n";
     if (errStr!=""){
 	alert(errStr);
 	return 1;
@@ -583,6 +635,114 @@ function posePersoNonGraphique() {
     num [index(4,3)] = 37;
     num [index(4,4)] = 51;
 
+    // pour cacher les cartes non posees
+    // quelles sont-elles ?
+    var vu = new Array(52); // les cartes effectivement presentes
+    vu.fill(0);
+    // for(let l=0;l<5;l++) {
+    // 	for(let c=-20;c<20;c++) {
+    // 	    let k = num[index(l,c)];
+    // 	    if (k==-1) // Pas une carte
+    // 		continue;
+    // 	    vu[k] = 1;
+
 }  // FIN function posePersoNonGraphique() 
 // ************************************************************
 
+function resume(num) {
+    // creation d'un seul tableau de 52 entiers qui resume la situation
+    var pos = new Array(52); // les cartes effectivement presentes
+    pos.fill(-1);
+    for(var l=0;l<5;l++)
+	for(c=-20;c<20+1+20;c++) {
+	    let k = num[index(l,c)];
+	    if (k==-1) // Pas une carte
+    		continue;
+	    if ((k<0) || (k>=52))
+		alert("dans resume k= "+k);
+	    pos[k] = index(l,c);
+	}
+    return pos;
+}  // FIN function resume()
+// ************************************************************
+	    
+function work(num) {
+    // test des matchs
+    var carteMatchantes = [];
+    for(var l=0;l<5;l++) {
+	let nbg = nbCartesGauche(l);
+	if (nbg!=0) {
+	    let carteBout = num[index(l,nbg)];
+	    let aux = matchante(carteBout);
+	    carteMatchantes = carteMatchantes.concat(aux);
+	}
+	let nbd = nbCartesDroite(l);
+	if (nbd!=0) {
+	    let carteBout = num[index(l,nbd)];
+	    let aux = matchante(carteBout);
+	    carteMatchantes = carteMatchantes.concat(aux);
+	}
+    } 
+    console.log("carteMatchantes "+carteMatchantes);
+    // cartes montantes
+    carteMontantes = [];
+    for (let l=1;l<5;l++) 
+	if (num[index(l,0)]==-1){
+	    // case vide tout as peux monter
+	    for(let x=0;x<3;x++)
+		carteMontantes.push(13*x);
+	} else if (num[index(l,0)] != 12)
+	    carteMontantes.push(num[index(l,0)]+1);
+    console.log("carteMontantes "+carteMontantes);
+    let zMont = 0;
+    let zMatch = 0;
+    for(var l=0;l<5;l++) {
+     	let nbg = nbCartesGauche(l);
+	if (nbg!=0) {
+    	    let carteTestee = num[index(l,nbg)];
+	    zMatch += countEltInList(carteTestee,carteMatchantes);
+	    zMont += countEltInList(carteTestee,carteMontantes);
+     	}
+	let nbd = nbCartesDroite(l);
+    	if (nbd!=0) {
+     	    let carteTestee = num[index(l,nbd)];
+	    zMatch += countEltInList(carteTestee,carteMatchantes);
+	    zMont += countEltInList(carteTestee,carteMontantes);
+     	}
+    }
+    alert("il y a "+zMatch+" matchs et "+zMont+" carte(s) qui monte(nt)");
+}  // FIN function work(num)    
+// ************************************************************
+
+function match(x,y) { // il faut mme couleur et y= x+/- 1
+    console.log("testing "+enClair(x)+" et "+enClair(y))
+    if (couleur(x)!=couleur(y))
+	return false;
+    if (valeur(x)==0)
+	return valeur(y)==1;
+    if (valeur(y)==12)
+	return valeur(y)==11;
+    return (valeur(x)==valeur(y)-1) || (valeur(x)==valeur(y)+1);
+}  // FIN function match(x,y)
+// ************************************************************
+
+function matchante(x) { // il faut mme couleur et y= x+/- 1
+    let v = valeur(x);
+    let c = couleur(x);
+    ans = [];
+    if (v!=0)
+	ans.push(karte(v-1,c));
+    if (v!=12)
+	ans.push(karte(v+1,c));
+    return ans;
+}  // FIN function match(x,y)
+// ************************************************************
+
+function countEltInList(el,Li) {
+    // retourne le nombre d'occurence de el dans la liste Li
+    let z = 0;
+    for (const element of Li)
+	z +=  (el==element);
+    return z;
+}  // FIN function countEltInList(el,Li)
+// ************************************************************
