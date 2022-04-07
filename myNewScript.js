@@ -44,13 +44,17 @@ let bandeauEnHaut = 50; // pour les boutons
 var isTouch = 'ontouchstart' in document.documentElement;
 let C = screen.width; // nombre de colonnes de pixels
 let L = screen.height; // nombre de lignes de pixels
-let seedSt= document.getElementById("seedId").value;
+let seedSt = getParameter("seedId"); // on lit dans l'url
+//    document.getElementById("seedId").value;
 let myRnd = new RandomSeeded();  // random Generator
-if (!isNaN(parseInt(seedSt)))
+if (!isNaN(parseInt(seedSt)))  // si seedSt n'est pas un nombre (par ex la string "random")
     myRnd.seed(parseInt(seedSt));
 seed = myRnd.seedUsed;  // si c'etait -1 ce sera la valeur effectivement utilisee
 document.getElementById("seedId").value = myRnd.seedUsed;
 // document.getElementById("outZone").innerHTML = "C="+C+" L="+L+" isTouch="+isTouch;
+let helpBtn = document.getElementById("help")
+helpBtn.style.left = C/2-cCarte/2+"px";
+helpBtn.style.top = bandeauEnHaut+"px";
 
 // declaration
 var num = new Array(5*(20+1+20)); // c'est le nom
@@ -65,7 +69,7 @@ poseLesCartesNonGraphique();
 //posePersoNonGraphique();
 asciiOut();
 showAllCardOnScreen();
-work(num);
+work(false);
 console.log("bye fin tour 1");
 
 // ************************************************************
@@ -76,6 +80,11 @@ function max(x,y){return x>y ? x : y}
 function couleur(carte) {return Math.floor(carte/13);} // ce sera 0:d/1:c/2:h/3:s
 function valeur(carte) {return carte%13;} // 0:As/1:2/2:3/ ... /9:10/10:valet/11:reine//12:roi
 function karte(val,coul) {return coul*13+val;}
+function getParameter( parameterName) {
+    let parameters = new URLSearchParams( window.location.search );
+    return parameters.get( parameterName)
+} // FIN function getParameter(parameterName)
+// ************************************************************
 
 function nextTour() {
     console.log("debute tour "+tour);
@@ -117,6 +126,12 @@ function reposeLesCartesNonGraphique() {
     asciiOut();
     showAllCardOnScreen();
 }  // FIN function reposeLesCartesNonGraphique()
+// ************************************************************
+
+function help() {
+    // appelee lorque le boton help est clique
+    work(true);
+}  // FIN function help()
 // ************************************************************
 
 function vazy() {
@@ -296,6 +311,14 @@ function index(l,c) {
 }  // FIN function index(l,c)
 // *******************************************************************
 
+function unindex(k) {
+    // retourne la sting l=%d c=%d
+    let l = Math.floor(k/(20+1+20));
+    let c = k%(20+1+20) - 20;
+    return ("ligne="+l+" colonne="+c);
+}  // FIN function index(l,c)
+// *******************************************************************
+
 function enClair(carte) {
     // retourne une string representant la carte
     let lesCouls = ["carreau","trefle","coeur","pique"];
@@ -440,7 +463,7 @@ function makeElementDraggable(elmnt) {
 	    num[caseDest] = carteTraitee; // elle est mise en Dest
 	    showAllCardOnScreen();
 	    check();
-	    work(num);// ici on a la nouvelle position acceptee
+	    work(false);// ici on a la nouvelle position acceptee
 	} else {
 	    alert(caseDest);
 	    elmnt.style.top = topInitial;
@@ -457,6 +480,7 @@ function makeElementDraggable(elmnt) {
 	// alert(message);
 	let coulTraitee = couleur(carteTraitee);
 	let caseDest=-1;
+	let poseSur = -1;
 	if (coteFinal==0) {
 	    // colonne du milieu
 	    caseDest = index(laLigneFinal,0);
@@ -465,7 +489,7 @@ function makeElementDraggable(elmnt) {
 	    // case non vide
 	    ok = (valeur(carteTraitee)==valeur(num[caseDest])+1) &&
 		(couleur(carteTraitee)==couleur(num[caseDest]))
-	    return ok ? caseDest : carteTraitee+" ne matche pas sur colonne centrale";
+	    return ok ? caseDest : enClair(carteTraitee)+" ne matche pas sur colonne centrale";
 	}
 	if (coteFinal==1) {
 	    // colonne  de droite
@@ -473,7 +497,8 @@ function makeElementDraggable(elmnt) {
 	    if (nbCartesDroite(laLigneFinal)==0) 
 		return (laLigneFinal==0)?caseDest : "on ne peut poser une carte sur sur la premiere colonne qu'en moustache"; 
 	    // ici il y a des cartes sur la ligne de destination
-	    ok = ((valeur(num[caseDest-1])==valeur(carteTraitee)+1) || (valeur(num[caseDest-1])==valeur(carteTraitee)-1));
+	    poseSur= num[caseDest-1];
+	    ok = ((valeur(poseSur)==valeur(carteTraitee)+1) || (valeur(poseSur)==valeur(carteTraitee)-1));
 	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest-1]));
 	} else {
 	    // colonne de gauche
@@ -481,49 +506,13 @@ function makeElementDraggable(elmnt) {
 	    if (nbCartesGauche(laLigneFinal)==0) 
 		return (laLigneFinal==0)?caseDest : "on ne peut poser une carte sur sur la premiere colonne qu'en moustache";
 	    // ici il y a des cartes sur la ligne de destination
-	    ok = ((valeur(num[caseDest+1])==valeur(carteTraitee)+1) || (valeur(num[caseDest+1])==valeur(carteTraitee)-1));
+	    poseSur= num[caseDest+1];
+	    ok = ((valeur(poseSur)==valeur(carteTraitee)+1) || (valeur(poseSur)==valeur(carteTraitee)-1));
 	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest+1]));
 	} // fin test de gauche/centre/droite
-	return ok ? caseDest : enClair(carteTraitee)+ " ne peut aller "+caseDest;
+	return ok ? caseDest : enClair(carteTraitee)+ " ne peut aller en "+unindex(caseDest)+" sur "+enClair(poseSur);
     } // FIN function isOK()
 
-    function isOKSaved(coteFinal,laLigneFinal,carteTraitee) {
-	// retourne la case destination si ok ou
-	// une string decrivant l'erreur sinon
-	let message = "deplacemt de "+enClair(carteTraitee);
-	// alert(message);
-	let coulTraitee = couleur(carteTraitee);
-	let caseDest=-1;
-	if (coteFinal==0) {
-	    // colonne du milieu
-	    caseDest = index(laLigneFinal,0);
-	    if (num[caseDest]==-1)  // case vide : on ne peut poser qu'un as
-		ok = valeur(carteTraitee)==0;
-	    else
-		ok = (valeur(carteTraitee)==valeur(num[caseDest])+1) &&
-		(couleur(carteTraitee)==couleur(num[caseDest]))
-	    return ok ? caseDest : -1;
-	}
-	if (coteFinal==1) {
-	    // colonne  de droite
-	    caseDest = index(laLigneFinal,nbCartesDroite(laLigneFinal)+1);
-	    if (nbCartesDroite(laLigneFinal)==0) 
-		return (laLigneFinal==0)?caseDest : -1; // on peut toujours su la ligne 0, jamais sinon
-	    // ici il y a des cartes sur la ligne de destination
-	    ok = ((valeur(num[caseDest-1])==valeur(carteTraitee)+1) || (valeur(num[caseDest-1])==valeur(carteTraitee)-1));
-	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest-1]));
-	   
-	} else {
-	    // colonne de gauche
-	    caseDest = index(laLigneFinal,nbCartesGauche(laLigneFinal)-1);
-	    if (nbCartesGauche(laLigneFinal)==0) 
-		return (laLigneFinal==0)?caseDest : -1; // on peut toujours su la ligne 0, jamais sinon
-	    // ici il y a des cartes sur la ligne de destination
-	    ok = ((valeur(num[caseDest+1])==valeur(carteTraitee)+1) || (valeur(num[caseDest+1])==valeur(carteTraitee)-1));
-	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest+1]));
-	} // fin test de gauche/centre/droite
-	return ok ? caseDest : -1;
-    } // FIN function isOKSaved()
 } // FIN function makeElementDraggable(elmnt)
 // *******************************************************************
 
@@ -666,7 +655,7 @@ function resume(num) {
 }  // FIN function resume()
 // ************************************************************
 	    
-function work(num) {
+function work(alerteFlag) {
     // test des matchs
     var carteMatchantes = [];
     for(var l=0;l<5;l++) {
@@ -710,8 +699,9 @@ function work(num) {
 	    zMont += countEltInList(carteTestee,carteMontantes);
      	}
     }
-    alert("il y a "+zMatch+" matchs et "+zMont+" carte(s) qui monte(nt)");
-}  // FIN function work(num)    
+    if (alerteFlag)
+	alert("il y a "+zMatch+" matchs et "+zMont+" carte(s) qui monte(nt)");
+}  // FIN function work(alerteFlag)    
 // ************************************************************
 
 function match(x,y) { // il faut mme couleur et y= x+/- 1
