@@ -268,7 +268,7 @@ function dsQuelleColonneEstCurseur(x) {
 function deQuelCoteEstCurseur(x) {
     // retourne -1 pour gauche, 0 pour colonne centrale, 1 pour droit
     let col=-1;
-    if ((C/2-cCarte/2<x-espaceMonte) && (x<C/2+cCarte/2+espaceMonte))
+    if ((C/2-cCarte/2-espaceMonte<x) && (x<C/2+cCarte/2+espaceMonte))
 	return 0;
     if (x>C/2+cCarte/2+espaceMonte)
 	return 1;
@@ -402,6 +402,8 @@ function makeElementDraggable(elmnt) {
 
     function onMouseDown(e) {
       	e = e || window.event;
+	if (e.button != 0)
+	    return ;
       	e.preventDefault();
       	// get the mouse cursor position at startup:
       	pos3 = e.clientX;
@@ -510,7 +512,7 @@ function makeElementDraggable(elmnt) {
 	    ok = ((valeur(poseSur)==valeur(carteTraitee)+1) || (valeur(poseSur)==valeur(carteTraitee)-1));
 	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest+1]));
 	} // fin test de gauche/centre/droite
-	return ok ? caseDest : enClair(carteTraitee)+ " ne peut aller en "+unindex(caseDest)+" sur "+enClair(poseSur);
+	return ok ? caseDest : enClair(carteTraitee)+ " ne peut allers sur "+enClair(poseSur)+" en "+unindex(caseDest);
     } // FIN function isOK()
 
 } // FIN function makeElementDraggable(elmnt)
