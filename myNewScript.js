@@ -45,13 +45,16 @@ var isTouch = 'ontouchstart' in document.documentElement;
 let C = screen.width; // nombre de colonnes de pixels
 let L = screen.height; // nombre de lignes de pixels
 let seedSt = getParameter("seedId"); // on lit dans l'url
+let tour = 1;
+let coup = 1;
 //    document.getElementById("seedId").value;
 let myRnd = new RandomSeeded();  // random Generator
 if (!isNaN(parseInt(seedSt)))  // si seedSt n'est pas un nombre (par ex la string "random")
     myRnd.seed(parseInt(seedSt));
 seed = myRnd.seedUsed;  // si c'etait -1 ce sera la valeur effectivement utilisee
 document.getElementById("seedId").value = myRnd.seedUsed;
-// document.getElementById("outZone").innerHTML = "C="+C+" L="+L+" isTouch="+isTouch;
+//document.getElementById("outZone").innerHTML = "C="+C+" L="+L+" isTouch="+isTouch;
+updateInfo();
 let helpBtn = document.getElementById("help")
 helpBtn.style.left = C/2-cCarte/2+"px";
 helpBtn.style.top = bandeauEnHaut+"px";
@@ -64,12 +67,14 @@ num.fill(-1); // -1 veut dire pas de carte. ATTENTION en colonne centrake (col=0
 let elements = document.getElementsByClassName("mydiv");
 for (let i = 0; elements[i]; i++)
     makeElementDraggable(elements[i]);
-var tour = 1;
 poseLesCartesNonGraphique();
 //posePersoNonGraphique();
-asciiOut();
+// asciiOut();
 showAllCardOnScreen();
 let historique = []
+let res = resume(num);
+historique.push(res);
+
 // ************************************************************
 //            FUNCTIONS
 // ************************************************************
@@ -85,12 +90,22 @@ function getParameter( parameterName) {
 // ************************************************************
 
 function nextTour() {
-    console.log("debute tour "+tour);
+    if (tour==3)
+	alert("tricheurs !!!");
     reposeLesCartesNonGraphique();
-    asciiOut();
+    // asciiOut();
     showAllCardOnScreen();
-    console.log("bye fin tour "+tour);
-}  // FIN function nextTour()
+    tour ++;
+    coup = 1;
+    updateInfo();}  // FIN function nextTour()
+// ***********************************************************
+
+function annuleDernierCoup(){
+    historique.pop();
+    let ancien = historique.pop();
+    deResume(ancien) ;
+    showAllCardOnScreen();
+}  // FIN function annuleDernierCoup()
 // ***********************************************************
 
 function reposeLesCartesNonGraphique() {
@@ -121,8 +136,7 @@ function reposeLesCartesNonGraphique() {
 		col = -col-1;
 	}
     }
-    asciiOut();
-    showAllCardOnScreen();
+    //asciiOut();
 }  // FIN function reposeLesCartesNonGraphique()
 // ************************************************************
 
@@ -131,15 +145,6 @@ function help() {
     work(true);
 }  // FIN function help()
 // ************************************************************
-
-function vazy() {
-    //document.getElementById("go").innerHTML="fini"
-    poseLesCartesNonGraphique();
-    asciiOut();
-    showAllCardOnScreen();
-    console.log("bye 3");
-}  // FIN function vazy()
-// ***********************************************************
 
 function asciiOut() {
     n0=0;
@@ -207,7 +212,6 @@ function poseLesCartesNonGraphique() {
 		curC = -curC-1;
 	}
     } // fin for(int i=0;i<52
-    tour++;
 }  // FIN function poseLesCartesNonGraphique()
 // *******************************************************************
 
@@ -313,8 +317,16 @@ function unindex(k) {
     // retourne la sting l=%d c=%d
     let l = Math.floor(k/(20+1+20));
     let c = k%(20+1+20) - 20;
+    return [l,c];
+}  // FIN function unindex(l,c)
+// *******************************************************************
+
+function unindexStr(k) {
+    // retourne la sting l=%d c=%d
+    let l,c;
+    [l,c] = unindex(k);
     return ("ligne="+l+" colonne="+c);
-}  // FIN function index(l,c)
+}  // FIN function unindex(l,c)
 // *******************************************************************
 
 function enClair(carte) {
@@ -387,6 +399,11 @@ function nbCartesDroite(line) {
     }
     return col-1;
 }  // FIN function nbCartesDroite(line) 
+// *******************************************************************
+
+function updateInfo() {
+    document.getElementById("outZone").innerHTML = "vous aller jouer le coup "+coup+" du tour "+tour;
+}  // FIN function updateInfo()
 // *******************************************************************
 
 function makeElementDraggable(elmnt) {
@@ -464,7 +481,10 @@ function makeElementDraggable(elmnt) {
 	    num[caseDest] = carteTraitee; // elle est mise en Dest
 	    showAllCardOnScreen();
 	    check();
-	    work(false);// ici on a la nouvelle position acceptee false=pas d'alerte sur les mouve possibles
+	    // ici on a la nouvelle position acceptee false=pas d'alerte sur les mouve possibles
+	    work(false);
+	    coup ++;
+	    updateInfo();
 	} else {
 	    // pas d'alerte si c'est juste un appuie/relache
 	    if ((laLigneInitial!=laLigneFinal) || (coteInitial!=coteFinal))
@@ -513,7 +533,7 @@ function makeElementDraggable(elmnt) {
 	    ok = ((valeur(poseSur)==valeur(carteTraitee)+1) || (valeur(poseSur)==valeur(carteTraitee)-1));
 	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest+1]));
 	} // fin test de gauche/centre/droite
-	return ok ? caseDest : enClair(carteTraitee)+ " ne peut allers sur "+enClair(poseSur)+" en "+unindex(caseDest);
+	return ok ? caseDest : enClair(carteTraitee)+ " ne peut allers sur "+enClair(poseSur)+" en "+unindexStr(caseDest);
     } // FIN function isOK()
 
 } // FIN function makeElementDraggable(elmnt)
@@ -663,6 +683,17 @@ function resume(num) {
 	}
     return pos;
 }  // FIN function resume()
+// ************************************************************
+
+function deResume(resume) {
+    // re-affectation du tableau num a partir de resume
+    num.fill(-1);
+    for(let k=0;k<52;k++) {
+	let l,c;
+	[l,c] = unindex(resume[k]);
+	num[index(l,c)]=k;
+    }
+}  // FIN function deResume()
 // ************************************************************
 
 function gagne() {
