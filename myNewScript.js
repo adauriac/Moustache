@@ -57,8 +57,8 @@ helpBtn.style.left = C/2-cCarte/2+"px";
 helpBtn.style.top = bandeauEnHaut+"px";
 
 // declaration
-var num = new Array(5*(20+1+20)); // c'est le nom
-num.fill(-1);
+var num = new Array(5*(20+1+20)); // 5 lignes et 20 cases a gauche 1 case centrale et 20 cases a droite
+num.fill(-1); // -1 veut dire pas de carte. ATTENTION en colonne centrake (col=0) il y a une pile de cartes
 
 //Make the DIV element draggagle:
 let elements = document.getElementsByClassName("mydiv");
@@ -69,9 +69,7 @@ poseLesCartesNonGraphique();
 //posePersoNonGraphique();
 asciiOut();
 showAllCardOnScreen();
-work(false);
-console.log("bye fin tour 1");
-
+let historique = []
 // ************************************************************
 //            FUNCTIONS
 // ************************************************************
@@ -395,7 +393,7 @@ function makeElementDraggable(elmnt) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     var posInitX=0,posInitY=0,posFinX=0,posFinY=0;
     var initialX=-1,initialY=-1;
-    var zInitial, topInitial,leftInitial,laLineInitial,laColInitial,indiceInitial,carteTraitee;
+    var zInitial, topInitial,leftInitial,laLineInitial,laColInitial,indiceInitial,carteTraitee,coteInitial;
     /*  move the DIV from anywhere inside the DIV:*/
     elmnt.style.zIndex = -1;
     elmnt.onmousedown = onMouseDown;
@@ -413,6 +411,7 @@ function makeElementDraggable(elmnt) {
 	topInitial =elmnt.style.top;
       	leftInitial = elmnt.style.left ;
 	zInitial = elmnt.style.zIndex;	
+	coteInitial = deQuelCoteEstCurseur(e.pageX);
 	laLigneInitial = dsQuelleLigneEstCurseur(e.pageY) ;
 	laColInitial = dsQuelleColonneEstCurseur(e.pageX) ;
 	let nCarteGauche = nbCartesGauche(laLigneInitial);
@@ -465,9 +464,11 @@ function makeElementDraggable(elmnt) {
 	    num[caseDest] = carteTraitee; // elle est mise en Dest
 	    showAllCardOnScreen();
 	    check();
-	    work(false);// ici on a la nouvelle position acceptee
+	    work(false);// ici on a la nouvelle position acceptee false=pas d'alerte sur les mouve possibles
 	} else {
-	    alert(caseDest);
+	    // pas d'alerte si c'est juste un appuie/relache
+	    if ((laLigneInitial!=laLigneFinal) || (coteInitial!=coteFinal))
+		alert(caseDest);
 	    elmnt.style.top = topInitial;
       	    elmnt.style.left = leftInitial;
 	    elmnt.style.zIndex = zInitial;
@@ -651,14 +652,36 @@ function resume(num) {
     		continue;
 	    if ((k<0) || (k>=52))
 		alert("dans resume k= "+k);
-	    pos[k] = index(l,c);
+	    if (c==0) {
+		// c'est une pile de la colonne du milieu :
+		let cou = couleur(k);
+		let val = valeur(k);
+		for (let v=0;v<=val;v++)
+		    pos[karte(v,cou)]= index(l,c);
+	    } else
+		pos[k] = index(l,c); // ce n'est PAS une pile
 	}
     return pos;
 }  // FIN function resume()
 // ************************************************************
-	    
+
+function gagne() {
+    // tour ce qu'il faut faire quans c'est gagne
+    alert("gagne !!!");
+    console.log(historique);
+}  // FIN function gagne() 
+// ************************************************************
+
 function work(alerteFlag) {
-    // test des matchs
+    // que reste-t-il a monter
+    let resteAMonter = 0;// nb carte restant a monter
+    for(let l=0;l<5;l++)
+	resteAMonter += nbCartesDroite(l) - nbCartesGauche(l);
+    if (resteAMonter==0) {
+	gagne();
+	return;
+    }
+    // test les matchs, montee, cree le resume et le push dans l'historique
     var carteMatchantes = [];
     for(var l=0;l<5;l++) {
 	let nbg = nbCartesGauche(l);
@@ -674,7 +697,7 @@ function work(alerteFlag) {
 	    carteMatchantes = carteMatchantes.concat(aux);
 	}
     } 
-    console.log("carteMatchantes "+carteMatchantes);
+    //console.log("carteMatchantes "+carteMatchantes);
     // cartes montantes
     carteMontantes = [];
     for (let l=1;l<5;l++) 
@@ -684,7 +707,7 @@ function work(alerteFlag) {
 		carteMontantes.push(13*x);
 	} else if (num[index(l,0)] != 12)
 	    carteMontantes.push(num[index(l,0)]+1);
-    console.log("carteMontantes "+carteMontantes);
+    //console.log("carteMontantes "+carteMontantes);
     let zMont = 0;
     let zMatch = 0;
     for(var l=0;l<5;l++) {
@@ -702,7 +725,9 @@ function work(alerteFlag) {
      	}
     }
     if (alerteFlag)
-	alert("il y a "+zMatch+" matchs et "+zMont+" carte(s) qui monte(nt)");
+	alert("il reste "+resteAMonter+" cartes a monter et il y a "+zMatch+" matchs et "+zMont+" carte(s) qui monte(nt)");
+    let res = resume(num);
+    historique.push(res);
 }  // FIN function work(alerteFlag)    
 // ************************************************************
 
