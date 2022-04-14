@@ -30,7 +30,7 @@ class RandomSeeded {
 // ****************************************************************
 //                      PARAMETRES MODIFIABLES
 // ****************************************************************
-console.log("debut du script");
+// console.log("debut du script");
 let verbose = 0; // sur la console
 let margeHaut = 100, margeCentre = 20;
 let lCarte = 96,cCarte = 75; // les dim sont 75x96
@@ -44,16 +44,16 @@ let bandeauEnHaut = 50; // pour les boutons
 var isTouch = 'ontouchstart' in document.documentElement;
 let C = screen.width; // nombre de colonnes de pixels
 let L = screen.height; // nombre de lignes de pixels
-let seedSt = getParameter("seedId"); // on lit dans l'url
-let tour = 1;
-let coup = 1;
-//    document.getElementById("seedId").value;
 let myRnd = new RandomSeeded();  // random Generator
+// let seedSt = getParameter("seedId"); // on lit dans l'url
+seedSt= document.getElementById("seedId").value
 if (!isNaN(parseInt(seedSt)))  // si seedSt n'est pas un nombre (par ex la string "random")
     myRnd.seed(parseInt(seedSt));
 seed = myRnd.seedUsed;  // si c'etait -1 ce sera la valeur effectivement utilisee
 document.getElementById("seedId").value = myRnd.seedUsed;
 //document.getElementById("outZone").innerHTML = "C="+C+" L="+L+" isTouch="+isTouch;
+let tour = 1;
+let coup = 1;
 updateInfo();
 let helpBtn = document.getElementById("help")
 helpBtn.style.left = C/2-cCarte/2+"px";
@@ -101,10 +101,16 @@ function nextTour() {
 // ***********************************************************
 
 function annuleDernierCoup(){
+    if (historique.length==1) // pour les cretins qui font undo au 1er coup
+	return;
     historique.pop();
-    let ancien = historique.pop();
+    let ancien = historique[historique.length-1];
     deResume(ancien) ;
     showAllCardOnScreen();
+    coup--;
+    if (coup==0)
+	alert("oops coup 0")
+    updateInfo();
 }  // FIN function annuleDernierCoup()
 // ***********************************************************
 
@@ -142,7 +148,57 @@ function reposeLesCartesNonGraphique() {
 
 function help() {
     // appelee lorque le boton help est clique
-    work(true);
+    let resteAMonter = 0;// nb carte restant a monter
+    for(let l=0;l<5;l++)
+	resteAMonter += nbCartesDroite(l) - nbCartesGauche(l);
+    if (resteAMonter==0) {
+	gagne();
+	return;
+    }
+    // test les matchs, montee, cree le resume et le push dans l'historique
+    var carteMatchantes = [];
+    for(var l=0;l<5;l++) {
+	let nbg = nbCartesGauche(l);
+	if (nbg!=0) {
+	    let carteBout = num[index(l,nbg)];
+	    let aux = matchante(carteBout);
+	    carteMatchantes = carteMatchantes.concat(aux);
+	}
+	let nbd = nbCartesDroite(l);
+	if (nbd!=0) {
+	    let carteBout = num[index(l,nbd)];
+	    let aux = matchante(carteBout);
+	    carteMatchantes = carteMatchantes.concat(aux);
+	}
+    } 
+    //console.log("carteMatchantes "+carteMatchantes);
+    // cartes montantes
+    carteMontantes = [];
+    for (let l=1;l<5;l++) 
+	if (num[index(l,0)]==-1){
+	    // case vide tout as peux monter
+	    for(let x=0;x<4;x++)
+		carteMontantes.push(13*x);
+	} else if (num[index(l,0)] != 12)
+	    carteMontantes.push(num[index(l,0)]+1);
+    //console.log("carteMontantes "+carteMontantes);
+    let zMont = 0;
+    let zMatch = 0;
+    for(var l=0;l<5;l++) {
+     	let nbg = nbCartesGauche(l);
+	if (nbg!=0) {
+    	    let carteTestee = num[index(l,nbg)];
+	    zMatch += countEltInList(carteTestee,carteMatchantes);
+	    zMont += countEltInList(carteTestee,carteMontantes);
+     	}
+	let nbd = nbCartesDroite(l);
+    	if (nbd!=0) {
+     	    let carteTestee = num[index(l,nbd)];
+	    zMatch += countEltInList(carteTestee,carteMatchantes);
+	    zMont += countEltInList(carteTestee,carteMontantes);
+     	}
+    }
+    alert("il reste "+resteAMonter+" cartes a monter et il y a "+zMatch+" matchs et "+zMont+" carte(s) qui monte(nt)");
 }  // FIN function help()
 // ************************************************************
 
@@ -482,7 +538,7 @@ function makeElementDraggable(elmnt) {
 	    showAllCardOnScreen();
 	    check();
 	    // ici on a la nouvelle position acceptee false=pas d'alerte sur les mouve possibles
-	    work(false);
+	    work();
 	    coup ++;
 	    updateInfo();
 	} else {
@@ -687,6 +743,10 @@ function resume(num) {
 
 function deResume(resume) {
     // re-affectation du tableau num a partir de resume
+    if (typeof resume==='undefined') {
+	alert("deResume appelle avec resume undefined");
+	return;
+    }
     num.fill(-1);
     for(let k=0;k<52;k++) {
 	let l,c;
@@ -703,63 +763,11 @@ function gagne() {
 }  // FIN function gagne() 
 // ************************************************************
 
-function work(alerteFlag) {
+function work() {
     // que reste-t-il a monter
-    let resteAMonter = 0;// nb carte restant a monter
-    for(let l=0;l<5;l++)
-	resteAMonter += nbCartesDroite(l) - nbCartesGauche(l);
-    if (resteAMonter==0) {
-	gagne();
-	return;
-    }
-    // test les matchs, montee, cree le resume et le push dans l'historique
-    var carteMatchantes = [];
-    for(var l=0;l<5;l++) {
-	let nbg = nbCartesGauche(l);
-	if (nbg!=0) {
-	    let carteBout = num[index(l,nbg)];
-	    let aux = matchante(carteBout);
-	    carteMatchantes = carteMatchantes.concat(aux);
-	}
-	let nbd = nbCartesDroite(l);
-	if (nbd!=0) {
-	    let carteBout = num[index(l,nbd)];
-	    let aux = matchante(carteBout);
-	    carteMatchantes = carteMatchantes.concat(aux);
-	}
-    } 
-    //console.log("carteMatchantes "+carteMatchantes);
-    // cartes montantes
-    carteMontantes = [];
-    for (let l=1;l<5;l++) 
-	if (num[index(l,0)]==-1){
-	    // case vide tout as peux monter
-	    for(let x=0;x<3;x++)
-		carteMontantes.push(13*x);
-	} else if (num[index(l,0)] != 12)
-	    carteMontantes.push(num[index(l,0)]+1);
-    //console.log("carteMontantes "+carteMontantes);
-    let zMont = 0;
-    let zMatch = 0;
-    for(var l=0;l<5;l++) {
-     	let nbg = nbCartesGauche(l);
-	if (nbg!=0) {
-    	    let carteTestee = num[index(l,nbg)];
-	    zMatch += countEltInList(carteTestee,carteMatchantes);
-	    zMont += countEltInList(carteTestee,carteMontantes);
-     	}
-	let nbd = nbCartesDroite(l);
-    	if (nbd!=0) {
-     	    let carteTestee = num[index(l,nbd)];
-	    zMatch += countEltInList(carteTestee,carteMatchantes);
-	    zMont += countEltInList(carteTestee,carteMontantes);
-     	}
-    }
-    if (alerteFlag)
-	alert("il reste "+resteAMonter+" cartes a monter et il y a "+zMatch+" matchs et "+zMont+" carte(s) qui monte(nt)");
     let res = resume(num);
     historique.push(res);
-}  // FIN function work(alerteFlag)    
+}  // FIN function work()    
 // ************************************************************
 
 function match(x,y) { // il faut mme couleur et y= x+/- 1
