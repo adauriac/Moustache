@@ -44,37 +44,20 @@ let bandeauEnHaut = 50; // pour les boutons
 var isTouch = 'ontouchstart' in document.documentElement;
 let C = screen.width; // nombre de colonnes de pixels
 let L = screen.height; // nombre de lignes de pixels
-let myRnd = new RandomSeeded();  // random Generator
-// let seedSt = getParameter("seedId"); // on lit dans l'url
-seedSt= document.getElementById("seedId").value
-if (!isNaN(parseInt(seedSt)))  // si seedSt n'est pas un nombre (par ex la string "random")
-    myRnd.seed(parseInt(seedSt));
-seed = myRnd.seedUsed;  // si c'etait -1 ce sera la valeur effectivement utilisee
-document.getElementById("seedId").value = myRnd.seedUsed;
-//document.getElementById("outZone").innerHTML = "C="+C+" L="+L+" isTouch="+isTouch;
-let tour = 1;
-let coup = 1;
-updateInfo();
-let helpBtn = document.getElementById("help")
-helpBtn.style.left = C/2-cCarte/2+"px";
-helpBtn.style.top = bandeauEnHaut+"px";
-
 // declaration
 var num = new Array(5*(20+1+20)); // 5 lignes et 20 cases a gauche 1 case centrale et 20 cases a droite
 num.fill(-1); // -1 veut dire pas de carte. ATTENTION en colonne centrake (col=0) il y a une pile de cartes
-
 //Make the DIV element draggagle:
 let elements = document.getElementsByClassName("mydiv");
 for (let i = 0; elements[i]; i++)
     makeElementDraggable(elements[i]);
-poseLesCartesNonGraphique();
-//posePersoNonGraphique();
-// asciiOut();
-showAllCardOnScreen();
-let historique = []
-let res = resume(num);
-historique.push(res);
-
+let helpBtn = document.getElementById("help")
+helpBtn.style.left = C/2-cCarte/2+"px";
+helpBtn.style.top = bandeauEnHaut+"px";
+let coup,tour;
+let myRnd = new RandomSeeded();  // random Generator
+let historique;
+go();
 // ************************************************************
 //            FUNCTIONS
 // ************************************************************
@@ -87,6 +70,25 @@ function getParameter( parameterName) {
     let parameters = new URLSearchParams( window.location.search );
     return parameters.get( parameterName)
 } // FIN function getParameter(parameterName)
+// ************************************************************
+
+function go() {
+    // let seedSt = getParameter("seedId"); // on lit dans l'url
+    seedSt= document.getElementById("seedId").value
+    if (!isNaN(parseInt(seedSt)))  // si seedSt est un nombre
+	myRnd.seed(parseInt(seedSt));
+    seed = myRnd.seedUsed;  // si c'etait -1 ce sera la valeur effectivement utilisee
+    document.getElementById("seedId").value = myRnd.seedUsed;
+    historique = [];
+    tour = 1;
+    coup = 1;
+    updateInfo();
+    poseLesCartesNonGraphique();
+    // asciiOut();
+    showAllCardOnScreen();
+    let res = resume(num);
+    historique.push(res);
+}  // FIN function go()
 // ************************************************************
 
 function nextTour() {
@@ -144,6 +146,11 @@ function reposeLesCartesNonGraphique() {
     }
     //asciiOut();
 }  // FIN function reposeLesCartesNonGraphique()
+// ************************************************************
+
+function fileReading() {
+    alert("file Reading()");
+}  // FIN function fileReading()
 // ************************************************************
 
 function help() {
@@ -357,7 +364,7 @@ function showAllCardOnScreen() {
 
 function getInPlaceNonGraphique(l,c) { //quoi en l,c
     if ((l<0) || (l>4) || (c<-20) || (c>20)) {
-	alert("oops on demande une carte hors table 1 !");
+	alert("oops on demande une carte hors table (get) !");
 	return -1;
     }
     return num[index(l,c)];
@@ -395,7 +402,7 @@ function enClair(carte) {
 
 function putInPlaceNonGraphique(k,l,c) { //quoi en l,c
     if ((l<0) || (l>4) || (c<-20) || (c>20)) {
-	alert("oops on demande une carte hors table 2 !");
+	alert("oops on demande une carte hors table (put) !");
 	return -1;
     }
     if ((k<0-1) || (k>51))
@@ -458,7 +465,7 @@ function nbCartesDroite(line) {
 // *******************************************************************
 
 function updateInfo() {
-    document.getElementById("outZone").innerHTML = "vous aller jouer le coup "+coup+" du tour "+tour;
+    document.getElementById("outZone").innerHTML = "Vous aller jouer le coup "+coup+" du tour "+tour+" de la partie ";
 }  // FIN function updateInfo()
 // *******************************************************************
 

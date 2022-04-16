@@ -20,10 +20,26 @@
     #seedId {
 	width: 75px;
 	text-align: center;
-    }	
+    }
+    .popin {
+	position: absolute;
+ 	width: 100%;
+	height: 100%;
+	background-color:#f5f5f5;
+	z-index:42;
+	display:none;
+   }
+	
   </style>
   
   <body>
+    <div class="popin" id="helpPopin" 	>
+      <button onclick="document.getElementById('helpPopin').style.display='none' ">
+	retour au jeu
+      </button>
+      <!--  <img src="uneMoustache.jpg"> -->
+      
+    </div>
     <!-- le id represente la carte id/13=famille (d/c/h/s) id%13-1=valeur(0..12) -->
     <div class="mydiv" id="0"> <img src="Ad.gif"> </div> <!-- 0 -->
     <div class="mydiv" id="1"> <img src="2d.gif"> </div> <!-- 1 -->
@@ -81,16 +97,15 @@
     <div class="mydiv" id="50"> <img src="Qs.gif"> </div> <!-- 50 -->
     <div class="mydiv" id="51"> <img src="Ks.gif"> </div> <!-- 51 -->
 
-    <!-- <p id="outZone"> </p> -->
-    <label> Vous jouez la partie numero </label>
+    <label id="outZone">  </label> 
     <input type="text" id="seedId" name="seedName" value="random" width="120px"> 
-    <!-- <label> Vous pouvez changer ce numero, ou laisser la champ vide -->
-    <!--   pour une parte aleatoire, puis recharger la page</label> -->
     <button onclick="nextTour()"> Tour suivant </button>
     <button onclick="annuleDernierCoup()"> annulation dernier coup </button>
-    <p id="outZone">  </p> 
-
+    <button onclick="go()"> rejouer la partie </button>
     <button onclick="help()" id="help"> help !!! </button>
+    <button onclick="document.getElementById('helpPopin').style.display='block'">
+    apprendre les r&egrave;gles de la moustache  </button>
+
     <script src="myNewScript.js"></script>
   </body>
 </html>
