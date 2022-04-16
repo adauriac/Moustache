@@ -57,6 +57,7 @@ helpBtn.style.top = bandeauEnHaut+"px";
 let coup,tour;
 let myRnd = new RandomSeeded();  // random Generator
 let historique;
+let noAlert = false;
 go();
 // ************************************************************
 //            FUNCTIONS
@@ -364,7 +365,7 @@ function showAllCardOnScreen() {
 
 function getInPlaceNonGraphique(l,c) { //quoi en l,c
     if ((l<0) || (l>4) || (c<-20) || (c>20)) {
-	alert("oops on demande une carte hors table (get) !");
+	//alert("oops on demande une carte hors table (get) !");
 	return -1;
     }
     return num[index(l,c)];
@@ -436,7 +437,7 @@ function onPeutPrendre(line,col) {
 
 function nbCartesGauche(line) {
     if ((line<0) || (line>5)) {
-	alert("nbCartesGauche: line="+line);
+	//alert("nbCartesGauche: line="+line);
 	return -1;
     }
     let col = -1;
@@ -451,7 +452,7 @@ function nbCartesGauche(line) {
 
 function nbCartesDroite(line) {
    if ((line<0) || (line>5)) {
-	alert("nbCartesGauche: line="+line);
+	//alert("nbCartesGauche: line="+line);
 	return -1;
     }
     let col = 1;
@@ -537,6 +538,12 @@ function makeElementDraggable(elmnt) {
 	posFinX = e.clientX;
       	posFinY = e.clientY;
 	let laLigneFinal = dsQuelleLigneEstCurseur(e.pageY) ;
+	if (laLigneFinal>=5) { //on ne peut poser de cartesur cette ligne
+	    elmnt.style.top = topInitial;
+      	    elmnt.style.left = leftInitial;
+	    elmnt.style.zIndex = zInitial;
+	    return;
+	}
 	let coteFinal = deQuelCoteEstCurseur(e.pageX) ; // cote duquel on va tenter de poser
 	let caseDest = isOK(coteFinal,laLigneFinal,carteTraitee);
 	if ((typeof caseDest) == "number") {
@@ -596,7 +603,7 @@ function makeElementDraggable(elmnt) {
 	    ok = ((valeur(poseSur)==valeur(carteTraitee)+1) || (valeur(poseSur)==valeur(carteTraitee)-1));
 	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest+1]));
 	} // fin test de gauche/centre/droite
-	return ok ? caseDest : enClair(carteTraitee)+ " ne peut allers sur "+enClair(poseSur)+" en "+unindexStr(caseDest);
+	return ok ? caseDest : enClair(carteTraitee)+ " ne peut aller sur "+enClair(poseSur)+" en "+unindexStr(caseDest);
     } // FIN function isOK()
 
 } // FIN function makeElementDraggable(elmnt)
