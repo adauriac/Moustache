@@ -57,22 +57,22 @@
       automatiquement. La figure de gauche est un exemple. </br>
       2) Le but de la réussite est de <em> monter tous les cartes
       sur la colonne centrale</em>. </br>
-      3) On ne peut deplacer que des cartes en bord gauche ou droit de
+      3) On ne peut déplacer que des cartes en bord gauche ou droit de
       chaque ligne. </br>
       4) Sur la colonne centrale une carte ne peut être posée que sur
-      <em> la carte précédente de la même famille</em>.
-      Un as peut aller sur une case vide.</br>
+      <em> la carte précédente de la même famille</em>, 
+      un as ne peut donc aller que sur une case vide.</br>
       5) Hors colonne centrale une carte peut seulement aller sur le bord
       d'extrême gauche ou d'extrême droite d'une ligne. Il faut que la
-      carte déplacée précède ou succède la carte sur laquelle on
+      carte déplacée <em>précède ou succède </em>la carte sur laquelle on
       la pose.</br>
-      6) Si un coté de ligne est vide, on ne peut rien y poser, sauf
+      6) Si un côté de ligne est vide, on ne peut rien y poser, sauf
       si c'est la première ligne appelée <font color="red">
       moustache </font> où l'on peut tout
       mettre.</br>
       7) On peut demander à passer au tour suivant: toutes les cartes
       hors moustache et colonne centrale sont récupérées, re-mélangées
-      et re-posées. On a doit à 2 tours après la pose initiale.</br>
+      et re-posées. On a droit à 2 tours après la pose initiale.</br>
       <center>
 	<img src="positionInitialeModifie.png" width="25%" height="45%">
 	<img src="exampleModifie.png" width="25%" height="45%">
@@ -85,9 +85,13 @@
       ou le 10 de pique sur le valet de pique, ou le valet sur le 10 </br>
       ou le 10 de pique sur le 9 de pique, ou le 9 sur le 10 </br>
       <em> Dans l'exemple de droite ci-dessus:</em> </br>
-      on peut mettre 8 de carreau, ou 7 de trèfle, ou roi de trèfle, ... , ou 10 de pique dans moustache de droite</br>
+      on peut mettre 8 de carreau, ou 7 de pique, ou roi de trèfle,
+      ... , ou 10 de pique dans la moustache de droite</br>
       on peut mettre le 7 de carreau sur le 8 de carreau ou le 8 sur le 7</br>
-      on ne peut rien mettre sur la 1ère colonne de droite le la dernière ligne.
+      on ne peut rien mettre sur la 1ère colonne de droite de la
+      dernière ligne </br>
+      on peut mettre le 8 de carreau sur le 9 de carreau ou le 9 sur
+      le 8
       <center>
 	<button onclick="document.getElementById('helpPopin').style.display='none' ">
 	  retour au jeu
@@ -96,13 +100,23 @@
     </div>
     
     <div class="popin" id="apropos">
-      Ici on va parler de l'historique de cette réussite. À venir ... </br></br>
+      Ici on va parler de l'historique de cette réussite qui m'a été
+      apprise par Alain Guyot qui la pratiquait quand il était étudiant, et
+      aussi plus tard (avec un taux de gain supérieur à ce que les
+      probabilités prédisent !). Eric Saint-Aman la tenait lui de sa
+      grand mère polonaise. Je vais étoffer cette partie, si vous avez
+      des informations à me communiquer, n'hésitez pas à m'écrire à
+      jeanchristian@anglesdauriac.fr
+      </br>
       Beaucoup d'améliorations sont prévues, incluant une analyse exhaustive
-      de tous les coups possibles, un reservoir de parties intéressantes, etc
+      de tous les coups possibles, un réservoir de parties intéressantes, etc
       <center>
 	<button onclick="document.getElementById('apropos').style.display='none' ">
 	  retour au jeu
 	</button>
+      </center>
+      <center>
+	<img src="uneMoustache.jpg" width="10%" height="10%">
       </center>
     </div>
     
@@ -170,7 +184,7 @@
       </button>
       <button onclick="document.getElementById('apropos').style.display='block'"
 	      style="background-color:#ff6347">
-	a propos de la moustache
+	à propos de la moustache
       </button>
     </center>
     <center>
