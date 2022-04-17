@@ -16,7 +16,13 @@ class RandomSeeded {
 	this.m_z = (987654321 - i) & this.mask;
     } // fin seed(i)
 
-    // Returns number between 0 (inclusive) and 1 (exclusive) //4294967296
+    reSeed() {
+	// reinitialise au hasard
+	this.seedUsed = Math.floor(Math.random()*4294967296);
+	this.mask = 0xffffffff;
+	this.seed(this.seedUsed);
+    }
+	// Returns number between 0 (inclusive) and 1 (exclusive) //4294967296
     // just like Math.random().
     random() {
 	this.m_z = (36969 * (this.m_z & 65535) + (this.m_z >> 16)) & this.mask;
@@ -58,6 +64,7 @@ let coup,tour;
 let myRnd = new RandomSeeded();  // random Generator
 let historique;
 let noAlert = false;
+let mode="simple";
 go();
 // ************************************************************
 //            FUNCTIONS
@@ -73,11 +80,13 @@ function getParameter( parameterName) {
 } // FIN function getParameter(parameterName)
 // ************************************************************
 
-function go() {
+function go(seedSt) {
     // let seedSt = getParameter("seedId"); // on lit dans l'url
-    seedSt= document.getElementById("seedId").value
+    // seedSt= document.getElementById("seedId").value
     if (!isNaN(parseInt(seedSt)))  // si seedSt est un nombre
 	myRnd.seed(parseInt(seedSt));
+    else
+	myRnd.reSeed();
     seed = myRnd.seedUsed;  // si c'etait -1 ce sera la valeur effectivement utilisee
     document.getElementById("seedId").value = myRnd.seedUsed;
     historique = [];
@@ -89,11 +98,22 @@ function go() {
     showAllCardOnScreen();
     let res = resume(num);
     historique.push(res);
-}  // FIN function go()
+}  // FIN function go(seedSt)
+// ************************************************************
+
+function switchMode() {
+    // passage du mode "simple" ou mode "full"
+    alert("Beaucoup d'améliorations prévues. Pas encore implementé")
+    if (mode=="simple") {
+	mode = "full";
+    } else {
+	mode = "simple";
+    }
+}  // FIN function switchMode() 
 // ************************************************************
 
 function nextTour() {
-    if (tour==3)
+    if (tour>=3)
 	alert("tricheurs !!!");
     reposeLesCartesNonGraphique();
     // asciiOut();
@@ -466,7 +486,7 @@ function nbCartesDroite(line) {
 // *******************************************************************
 
 function updateInfo() {
-    document.getElementById("outZone").innerHTML = "Vous aller jouer le coup "+coup+" du tour "+tour+" de la partie ";
+    document.getElementById("outZone").innerHTML = "Vous allez jouer le coup "+coup+" du tour "+tour+" de la partie "+myRnd.seedUsed;
 }  // FIN function updateInfo()
 // *******************************************************************
 

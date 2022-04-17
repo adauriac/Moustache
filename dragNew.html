@@ -20,6 +20,10 @@
     #seedId {
 	width: 75px;
 	text-align: center;
+	display:none;
+    }
+    #go {
+	display:none;
     }
     .popin {
 	position: absolute;
@@ -33,24 +37,62 @@
   </style>
   
   <body>
+    <div class="popin" id="poseInitiale">
+      blahblah
+      <center>
+	<button onclick=
+		"document.getElementById('helpPopin').style.display='block';
+		 document.getElementById('poseInitiale').style.display='none';
+		">
+	  fermer
+	</button>
+      </center>
+    </div>
     <div class="popin" id="helpPopin" 	>
       1) On dispose les cartes initialement suivant une règle
-      explique&eacute; ici, mais que le site fait pour vous
-      automatiquement. la figure I est un example. </br>
-      2) le but de la r&eacute;ussite est de monter tous les cartes
-      sur la colonne centrale. </br>
-      3) on ne peut deplacer que des cartes en bord gauche ou droit de
-      chaque ligne (sur la figure 1 ce sera 6 de pique, as de coeur,
-      9 de coeur, dame de pique,valet de pique, ... ,as de carreau). </br>
-      4) une carte deplace peut soit monter 
-      <img src="positionInitiale.png" width="25%" height="40%">
-      <img src="example.png" width="25%" height="40%">
-      <!--  <img src="uneMoustache.jpg"> -->
-      <button onclick="document.getElementById('helpPopin').style.display='none' ">
-	retour au jeu
-      </button>
-      
+      expliquée
+      <button onclick="document.getElementById('helpPopin').style.display='none';
+		       document.getElementById('poseInitiale').style.display='block';">ici
+      </button>, mais que le site fait pour vous
+      automatiquement. La figure de gauche est un exemple. </br>
+      2) Le but de la réussite est de <em> monter tous les cartes
+      sur la colonne centrale</em>. </br>
+      3) On ne peut deplacer que des cartes en bord gauche ou droit de
+      chaque ligne. </br>
+      4) Sur la colonne centrale une carte ne peut être posée que sur
+      <em> la carte précédente de la même famille</em>.
+      Un as peut aller sur une case vide.</br>
+      5) Hors colonne centrale une carte peut seulement aller sur le bord
+      d'extrême gauche ou d'extrême droite d'une ligne. Il faut que la
+      carte déplacée précède ou succède la carte sur laquelle on
+      la pose.</br>
+      6) Si un coté de ligne est vide, on ne peut rien y poser, sauf
+      si c'est la première ligne appelée <font color="red">
+      moustache </font> où l'on peut tout
+      mettre.</br>
+      7) On peut demander à passer au tour suivant: toutes les cartes
+      hors moustache et colonne centrale sont récupérées, re-mélangées
+      et re-posées. On a doit à 2 tours après la pose initiale.</br>
+      <center>
+	<img src="positionInitialeModifie.png" width="25%" height="45%">
+	<img src="exampleModifie.png" width="25%" height="45%">
+      </center>
+      <em> Dans l'exemple de gauche ci-dessus:</em> </br>
+      on peut placer l'as de carreau et l'as de coeur sur la colonne centrale </br>
+      on peut placer la dame de pique sur le valet de pique, ou le valet sur la dame </br>
+      ou le 10 de pique sur le valet de pique, ou le valet sur le 10 </br>
+      ou le 10 de pique sur le 9 de pique, ou le 9 sur le 10 </br>
+      <em> Dans l'exemple de droite ci-dessus:</em> </br>
+      on peut mettre 8 de carreau, ou 7 de trèfle, ou roi de trèfle, ... , ou 10 de pique dans moustache de droite</br>
+      on peut mettre le 7 de carreau sur le 8 de carreau ou le 8 sur le 7</br>
+      on ne peut rien mettre sur la 1ère colonne de droite le la dernière ligne.
+      <center>
+	<button onclick="document.getElementById('helpPopin').style.display='none' ">
+	  retour au jeu
+	</button>
+      </center>
     </div>
+    
     <!-- le id represente la carte id/13=famille (d/c/h/s) id%13-1=valeur(0..12) -->
     <div class="mydiv" id="0"> <img src="Ad.gif"> </div> <!-- 0 -->
     <div class="mydiv" id="1"> <img src="2d.gif"> </div> <!-- 1 -->
@@ -108,14 +150,18 @@
     <div class="mydiv" id="50"> <img src="Qs.gif"> </div> <!-- 50 -->
     <div class="mydiv" id="51"> <img src="Ks.gif"> </div> <!-- 51 -->
 
+    <button onclick="document.getElementById('helpPopin').style.display='block'"
+	    style="background-color:#ff6347">
+      les r&egrave;gles de la moustache
+    </button>
     <label id="outZone">  </label> 
     <input type="text" id="seedId" name="seedName" value="random" width="120px"> 
-    <button onclick="nextTour()"> Tour suivant </button>
     <button onclick="annuleDernierCoup()"> annulation dernier coup </button>
-    <button onclick="go()"> rejouer la partie </button>
-    <button onclick="help()" id="help"> help !!! </button>
-    <button onclick="document.getElementById('helpPopin').style.display='block'">
-    apprendre les r&egrave;gles de la moustache  </button>
+    <button onclick="nextTour()"> Tour suivant </button>
+    <button onclick="go()" id="go"> rejouer la partie </button>
+    <button onclick="go('random')" id="rego"> nouvelle partie </button>
+    <button onclick="help()" id="help"> <strong> help !!!</strong> </button>
+    <button onclick="switchMode()" id="switchMode"> mode </button>
 
     <script src="myNewScript.js"></script>
   </body>
