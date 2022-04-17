@@ -42,7 +42,7 @@ let margeHaut = 100, margeCentre = 20;
 let lCarte = 96,cCarte = 75; // les dim sont 75x96
 let espaceMonte = 20; // espace entre la colonne ou on monte et ses voisines
 let chevauche = 40; // chevauchement des cartes
-let bandeauEnHaut = 50; // pour les boutons
+let bandeauEnHaut = 80; // pour les boutons
 // ****************************************************************
 //                      FIN PARAMETRES MODIFIABLES
 // ****************************************************************
@@ -103,7 +103,7 @@ function go(seedSt) {
 
 function switchMode() {
     // passage du mode "simple" ou mode "full"
-    alert("Beaucoup d'améliorations prévues. Pas encore implementé")
+    alert("Beaucoup d'améliorations prévues, incluant une analyse exhaustive de tous les coups possibles, un reservoir de parties intéressantes, etc . Pas encore implementé")
     if (mode=="simple") {
 	mode = "full";
     } else {

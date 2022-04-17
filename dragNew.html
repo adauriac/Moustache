@@ -77,6 +77,8 @@
 	<img src="positionInitialeModifie.png" width="25%" height="45%">
 	<img src="exampleModifie.png" width="25%" height="45%">
       </center>
+      À tout moment le bouton <b>"help"</b> vous indiquera le nombre
+      et le type de mouvements possibles (mais pas les mouvements eux-mêmes).</br> 
       <em> Dans l'exemple de gauche ci-dessus:</em> </br>
       on peut placer l'as de carreau et l'as de coeur sur la colonne centrale </br>
       on peut placer la dame de pique sur le valet de pique, ou le valet sur la dame </br>
@@ -88,6 +90,17 @@
       on ne peut rien mettre sur la 1ère colonne de droite le la dernière ligne.
       <center>
 	<button onclick="document.getElementById('helpPopin').style.display='none' ">
+	  retour au jeu
+	</button>
+      </center>
+    </div>
+    
+    <div class="popin" id="apropos">
+      Ici on va parler de l'historique de cette réussite. À venir ... </br></br>
+      Beaucoup d'améliorations sont prévues, incluant une analyse exhaustive
+      de tous les coups possibles, un reservoir de parties intéressantes, etc
+      <center>
+	<button onclick="document.getElementById('apropos').style.display='none' ">
 	  retour au jeu
 	</button>
       </center>
@@ -150,18 +163,26 @@
     <div class="mydiv" id="50"> <img src="Qs.gif"> </div> <!-- 50 -->
     <div class="mydiv" id="51"> <img src="Ks.gif"> </div> <!-- 51 -->
 
-    <button onclick="document.getElementById('helpPopin').style.display='block'"
-	    style="background-color:#ff6347">
-      les r&egrave;gles de la moustache
-    </button>
-    <label id="outZone">  </label> 
-    <input type="text" id="seedId" name="seedName" value="random" width="120px"> 
-    <button onclick="annuleDernierCoup()"> annulation dernier coup </button>
-    <button onclick="nextTour()"> Tour suivant </button>
-    <button onclick="go()" id="go"> rejouer la partie </button>
-    <button onclick="go('random')" id="rego"> nouvelle partie </button>
-    <button onclick="help()" id="help"> <strong> help !!!</strong> </button>
-    <button onclick="switchMode()" id="switchMode"> mode </button>
+    <center>
+      <button onclick="document.getElementById('helpPopin').style.display='block'"
+	      style="background-color:#ff6347">
+	les règles de la moustache
+      </button>
+      <button onclick="document.getElementById('apropos').style.display='block'"
+	      style="background-color:#ff6347">
+	a propos de la moustache
+      </button>
+    </center>
+    <center>
+      <label id="outZone">  </label> 
+      <input type="text" id="seedId" name="seedName" value="random" width="120px"> 
+      <button onclick="annuleDernierCoup()"> annulation dernier coup </button>
+      <button onclick="nextTour()"> Tour suivant </button>
+      <button onclick="go()" id="go"> rejouer la partie </button>
+      <button onclick="go('random')" id="rego"> nouvelle partie </button>
+      <button onclick="help()" id="help"> <strong> help !!!</strong> </button>
+      <button onclick="switchMode()" id="switchMode"> mode </button>
+    </center>
 
     <script src="myNewScript.js"></script>
   </body>
