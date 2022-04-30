@@ -49,6 +49,7 @@
       </center>
     </div>
     <div class="popin" id="helpPopin" 	>
+      <a href="vid.html"> suivre ce lien pour un explication </a>
       1) On dispose les cartes initialement suivant une règle
       expliquée
       <button onclick="document.getElementById('helpPopin').style.display='none';
@@ -178,7 +179,12 @@
     <div class="mydiv" id="51"> <img src="Ks.gif"> </div> <!-- 51 -->
 
     <center>
-      <button onclick="playTuto()" type="button">tutoriel</button>
+      <!-- <button onclick="document.getElementById('tutoVideo').style.display='block'; -->
+      <!-- 		       document.getElementById('poseInitiale').style.display='none'; -->
+      <!-- 		       playTuto()"  -->
+      <!-- 	      style="background-color:#ff6347" type="button"> -->
+      <!-- 	tutoriel -->
+      <!-- </button> -->
       <button onclick="document.getElementById('helpPopin').style.display='block'"
 	      style="background-color:#ff6347">
 	les règles de la moustache
@@ -201,8 +207,8 @@
      </button>
       <button onclick="switchMode()" id="switchMode"> mode </button>
     </center>
-    <video id="tutoVideo">
-      <source src="tutorielMoustache.mkv" type="video/mkv">
+    <video id="tutoVideo" class="popin">
+      <source src="video_finale.mp4" type="video/mp4">
     </video>
 
     <script src="myNewScript.js"></script>
