@@ -178,6 +178,7 @@
     <div class="mydiv" id="51"> <img src="Ks.gif"> </div> <!-- 51 -->
 
     <center>
+      <button onclick="playTuto()" type="button">tutoriel</button>
       <button onclick="document.getElementById('helpPopin').style.display='block'"
 	      style="background-color:#ff6347">
 	les règles de la moustache
@@ -186,7 +187,7 @@
 	      style="background-color:#ff6347">
 	à propos de la moustache
       </button>
-    </center>
+   </center>
     <center>
       <label id="outZone">  </label> 
       <input type="text" id="seedId" name="seedName" value="random" width="120px"> 
@@ -200,6 +201,9 @@
      </button>
       <button onclick="switchMode()" id="switchMode"> mode </button>
     </center>
+    <video id="tutoVideo">
+      <source src="tutorielMoustache.mkv" type="video/mkv">
+    </video>
 
     <script src="myNewScript.js"></script>
   </body>

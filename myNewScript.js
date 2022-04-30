@@ -50,6 +50,8 @@ let bandeauEnHaut = 80; // pour les boutons
 var isTouch = 'ontouchstart' in document.documentElement;
 let C = screen.width; // nombre de colonnes de pixels
 let L = screen.height; // nombre de lignes de pixels
+var tutoVideo = document.getElementById("tutoVideo"); 
+
 // declaration
 var num = new Array(5*(20+1+20)); // 5 lignes et 20 cases a gauche 1 case centrale et 20 cases a droite
 num.fill(-1); // -1 veut dire pas de carte. ATTENTION en colonne centrake (col=0) il y a une pile de cartes
@@ -80,6 +82,11 @@ function getParameter( parameterName) {
 } // FIN function getParameter(parameterName)
 // ************************************************************
 
+function playTuto() { 
+  tutoVideo.play(); 
+}   // FIN function playTuto()
+// ************************************************************
+
 function go(seedSt) {
     // let seedSt = getParameter("seedId"); // on lit dans l'url
     // seedSt= document.getElementById("seedId").value
@@ -93,7 +100,8 @@ function go(seedSt) {
     tour = 1;
     coup = 1;
     updateInfo();
-    poseLesCartesNonGraphique();
+    // poseLesCartesNonGraphique(); BIDON
+    poseLesCartesSpecial();
     // asciiOut();
     showAllCardOnScreen();
     let res = resume(num);
@@ -256,6 +264,217 @@ function asciiOut() {
     console.log(ooo);
 }  // FIN function asciiOut()
 // ************************************************************
+
+// seed= 51154
+function poseLesCartesSpecial() {
+   num[0] = -1;
+   num[1] = -1;
+   num[2] = -1;
+   num[3] = -1;
+   num[4] = -1;
+   num[5] = -1;
+   num[6] = -1;
+   num[7] = -1;
+   num[8] = -1;
+   num[9] = -1;
+   num[10] = -1;
+   num[11] = -1;
+   num[12] = -1;
+   num[13] = -1;
+   num[14] = 46;
+   num[15] = 40;
+   num[16] = 26;
+   num[17] = 15;
+   num[18] = 5;
+   num[19] = 31;
+   num[20] = -1;
+   num[21] = 27;
+   num[22] = 38;
+   num[23] = 0;
+   num[24] = 39;
+   num[25] = 42;
+   num[26] = -1;
+   num[27] = -1;
+   num[28] = -1;
+   num[29] = -1;
+   num[30] = -1;
+   num[31] = -1;
+   num[32] = -1;
+   num[33] = -1;
+   num[34] = -1;
+   num[35] = -1;
+   num[36] = -1;
+   num[37] = -1;
+   num[38] = -1;
+   num[39] = -1;
+   num[40] = -1;
+   num[41] = -1;
+   num[42] = -1;
+   num[43] = -1;
+   num[44] = -1;
+   num[45] = -1;
+   num[46] = -1;
+   num[47] = -1;
+   num[48] = -1;
+   num[49] = -1;
+   num[50] = -1;
+   num[51] = -1;
+   num[52] = -1;
+   num[53] = -1;
+   num[54] = -1;
+   num[55] = -1;
+   num[56] = 37;
+   num[57] = 1;
+   num[58] = 14;
+   num[59] = 18;
+   num[60] = 19;
+   num[61] = -1;
+   num[62] = 3;
+   num[63] = 4;
+   num[64] = 24;
+   num[65] = 12;
+   num[66] = 2;
+   num[67] = -1;
+   num[68] = -1;
+   num[69] = -1;
+   num[70] = -1;
+   num[71] = -1;
+   num[72] = -1;
+   num[73] = -1;
+   num[74] = -1;
+   num[75] = -1;
+   num[76] = -1;
+   num[77] = -1;
+   num[78] = -1;
+   num[79] = -1;
+   num[80] = -1;
+   num[81] = -1;
+   num[82] = -1;
+   num[83] = -1;
+   num[84] = -1;
+   num[85] = -1;
+   num[86] = -1;
+   num[87] = -1;
+   num[88] = -1;
+   num[89] = -1;
+   num[90] = -1;
+   num[91] = -1;
+   num[92] = -1;
+   num[93] = -1;
+   num[94] = -1;
+   num[95] = -1;
+   num[96] = -1;
+   num[97] = 47;
+   num[98] = 20;
+   num[99] = 33;
+   num[100] = 45;
+   num[101] = 17;
+   num[102] = 13;
+   num[103] = 48;
+   num[104] = 34;
+   num[105] = 23;
+   num[106] = 25;
+   num[107] = 10;
+   num[108] = -1;
+   num[109] = -1;
+   num[110] = -1;
+   num[111] = -1;
+   num[112] = -1;
+   num[113] = -1;
+   num[114] = -1;
+   num[115] = -1;
+   num[116] = -1;
+   num[117] = -1;
+   num[118] = -1;
+   num[119] = -1;
+   num[120] = -1;
+   num[121] = -1;
+   num[122] = -1;
+   num[123] = -1;
+   num[124] = -1;
+   num[125] = -1;
+   num[126] = -1;
+   num[127] = -1;
+   num[128] = -1;
+   num[129] = -1;
+   num[130] = -1;
+   num[131] = -1;
+   num[132] = -1;
+   num[133] = -1;
+   num[134] = -1;
+   num[135] = -1;
+   num[136] = -1;
+   num[137] = -1;
+   num[138] = 51;
+   num[139] = 16;
+   num[140] = 9;
+   num[141] = 7;
+   num[142] = 35;
+   num[143] = -1;
+   num[144] = 8;
+   num[145] = 50;
+   num[146] = 28;
+   num[147] = 43;
+   num[148] = 11;
+   num[149] = -1;
+   num[150] = -1;
+   num[151] = -1;
+   num[152] = -1;
+   num[153] = -1;
+   num[154] = -1;
+   num[155] = -1;
+   num[156] = -1;
+   num[157] = -1;
+   num[158] = -1;
+   num[159] = -1;
+   num[160] = -1;
+   num[161] = -1;
+   num[162] = -1;
+   num[163] = -1;
+   num[164] = -1;
+   num[165] = -1;
+   num[166] = -1;
+   num[167] = -1;
+   num[168] = -1;
+   num[169] = -1;
+   num[170] = -1;
+   num[171] = -1;
+   num[172] = -1;
+   num[173] = -1;
+   num[174] = -1;
+   num[175] = -1;
+   num[176] = -1;
+   num[177] = -1;
+   num[178] = -1;
+   num[179] = 21;
+   num[180] = 36;
+   num[181] = 29;
+   num[182] = 22;
+   num[183] = 49;
+   num[184] = -1;
+   num[185] = 32;
+   num[186] = 6;
+   num[187] = 30;
+   num[188] = 41;
+   num[189] = 44;
+   num[190] = -1;
+   num[191] = -1;
+   num[192] = -1;
+   num[193] = -1;
+   num[194] = -1;
+   num[195] = -1;
+   num[196] = -1;
+   num[197] = -1;
+   num[198] = -1;
+   num[199] = -1;
+   num[200] = -1;
+   num[201] = -1;
+   num[202] = -1;
+   num[203] = -1;
+   num[204] = -1;
+}
+// FIN function poseLesCartesSpecial()
+// ******************************************************
 
 function poseLesCartesNonGraphique() {
     // CONTRUIT LE TABLEAU GLOBAL num EN POSANT
