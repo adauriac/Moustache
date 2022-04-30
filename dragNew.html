@@ -48,8 +48,35 @@
 	</button>
       </center>
     </div>
+    
+    <div class="popin" id="tutoVideo">
+      <center>
+	<button onclick="playVid()" type="button">Démarrer la vidéo </button>
+	<button onclick="pauseVid()" type="button">Mettre la vidéo en pause </button>
+	<button onclick="pauseVid();document.getElementById('tutoVideo').style.display='none' ">
+	  retour au jeu
+	</button><br> 
+	Ci dessous vous voyez une copie d'écran qui s'animera quand vous aurez cliqué "Démarrer la vidéo" 
+      </br>
+      </center>
+      <video id="myVideo" >
+	<source src="tutorielMoustache.mp4" type="video/mp4">
+      </video>
+      <script> 
+	var vid = document.getElementById("myVideo"); 
+	function playVid() { 
+	    vid.play(); 
+	} 
+	function pauseVid() { 
+	    vid.pause(); 
+	} 
+      </script> 
+    </div>
+    
     <div class="popin" id="helpPopin" 	>
-      <a href="vid.html"> suivre ce lien pour un explication </a>
+      <!-- <center> -->
+      <!-- 	<a href="vid.html"> cliquer ici pour une video d'explication </a>  -->
+      <!-- </center> -->
       1) On dispose les cartes initialement suivant une règle
       expliquée
       <button onclick="document.getElementById('helpPopin').style.display='none';
@@ -179,18 +206,17 @@
     <div class="mydiv" id="51"> <img src="Ks.gif"> </div> <!-- 51 -->
 
     <center>
-      <!-- <button onclick="document.getElementById('tutoVideo').style.display='block'; -->
-      <!-- 		       document.getElementById('poseInitiale').style.display='none'; -->
-      <!-- 		       playTuto()"  -->
-      <!-- 	      style="background-color:#ff6347" type="button"> -->
-      <!-- 	tutoriel -->
-      <!-- </button> -->
+      <button onclick="document.getElementById('tutoVideo').style.display='block';
+		       document.getElementById('poseInitiale').style.display='none'"
+	      style="background-color:#ff6347" type="button">
+	VIDÉO DE DÉMARRAGE : COMMENCER  PAR LÀ !
+      </button>
       <button onclick="document.getElementById('helpPopin').style.display='block'"
-	      style="background-color:#ff6347">
+	      style="background-color:#f7baba">
 	les règles de la moustache
       </button>
       <button onclick="document.getElementById('apropos').style.display='block'"
-	      style="background-color:#ff6347">
+	      style="background-color:#f7baba">
 	à propos de la moustache
       </button>
    </center>
@@ -204,12 +230,9 @@
       <button onclick="help()" id="help">
 	<strong> à l'aide !</strong></br>
  	<img src="uneMoustache.jpg" width="60%" height="40%">
-     </button>
-      <button onclick="switchMode()" id="switchMode"> mode </button>
+      </button>
+      <!-- <button onclick="switchMode()" id="switchMode"> mode </button>-->
     </center>
-    <video id="tutoVideo" class="popin">
-      <source src="video_finale.mp4" type="video/mp4">
-    </video>
 
     <script src="myNewScript.js"></script>
   </body>

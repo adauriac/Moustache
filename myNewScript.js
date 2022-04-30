@@ -100,8 +100,8 @@ function go(seedSt) {
     tour = 1;
     coup = 1;
     updateInfo();
-    // poseLesCartesNonGraphique(); BIDON
-    poseLesCartesSpecial();
+    poseLesCartesNonGraphique(); 
+    // poseLesCartesSpecial(); // qui a servi a la video tutotielle
     // asciiOut();
     showAllCardOnScreen();
     let res = resume(num);
