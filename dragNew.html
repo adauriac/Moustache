@@ -53,7 +53,7 @@
       <center>
 	<button onclick="playVid()" type="button">Démarrer la vidéo </button>
 	<button onclick="pauseVid()" type="button">Mettre la vidéo en pause </button>
-	<button onclick="pauseVid();document.getElementById('tutoVideo').style.display='none' ">
+	<button onclick="vid=document.getElementById('myVideo');vid.pause();document.getElementById('tutoVideo').style.display='none' ">
 	  retour au jeu
 	</button><br> 
 	Ci dessous vous voyez une copie d'écran qui s'animera quand vous aurez cliqué "Démarrer la vidéo" 
@@ -63,11 +63,13 @@
 	<source src="tutorielMoustache.mp4" type="video/mp4">
       </video>
       <script> 
-	var vid = document.getElementById("myVideo"); 
 	function playVid() { 
+	    var vid = document.getElementById("myVideo");
+	    console.log(vid);
 	    vid.play(); 
 	} 
 	function pauseVid() { 
+	    var vid = document.getElementById("myVideo"); 
 	    vid.pause(); 
 	} 
       </script> 
