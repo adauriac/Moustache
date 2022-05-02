@@ -51,8 +51,7 @@
     
     <div class="popin" id="tutoVideo">
       <center>
-	<button onclick="playVid()" type="button">Démarrer la vidéo </button>
-	<button onclick="pauseVid()" type="button">Mettre la vidéo en pause </button>
+	<button id="toggleButton" onclick="playPauseVid()" type="button">Démarrer la vidéo d'explication</button>
 	<button onclick="vid=document.getElementById('myVideo');vid.pause();document.getElementById('tutoVideo').style.display='none' ">
 	  retour au jeu
 	</button><br> 
@@ -62,7 +61,20 @@
       <video id="myVideo" >
 	<source src="tutorielMoustache.mp4" type="video/mp4">
       </video>
-      <script> 
+      <script>
+	function playPauseVid() {
+	    var el = document.getElementById('toggleButton');
+	    var vid = document.getElementById("myVideo");
+	    if (el.innerText != "Mettre en pause la vidéo") {
+		el.innerText = "Mettre en pause la vidéo";
+		vid.play()
+	    } else { 
+		el.innerText = "Continuer la vidéo";
+		vid.pause()
+	    }
+	}  // FIN playPauseVid()
+	// ************************************************************************************
+	
 	function playVid() { 
 	    var vid = document.getElementById("myVideo");
 	    console.log(vid);
