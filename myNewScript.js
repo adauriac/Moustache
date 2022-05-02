@@ -128,7 +128,11 @@ function nextTour() {
     showAllCardOnScreen();
     tour ++;
     coup = 1;
-    updateInfo();}  // FIN function nextTour()
+    updateInfo();
+    historique = [];
+    let res = resume(num);
+    historique.push(res);
+}  // FIN function nextTour()
 // ***********************************************************
 
 function annuleDernierCoup(){
