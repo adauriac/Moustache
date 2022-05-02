@@ -100,8 +100,10 @@ function go(seedSt) {
     tour = 1;
     coup = 1;
     updateInfo();
-    poseLesCartesNonGraphique(); 
-    // poseLesCartesSpecial(); // qui a servi a la video tutotielle
+    if (1)
+	poseLesCartesNonGraphique();
+    else
+	poseLesCartesSpecial(); // qui a servi a la video tutotielle
     // asciiOut();
     showAllCardOnScreen();
     let res = resume(num);
@@ -1014,7 +1016,7 @@ function deResume(resume) {
 // ************************************************************
 
 function gagne() {
-    // tour ce qu'il faut faire quans c'est gagne
+    // tour ce qu'il faut faire quand c'est gagne
     alert("gagne !!!");
     console.log(historique);
 }  // FIN function gagne() 
@@ -1022,6 +1024,13 @@ function gagne() {
 
 function work() {
     // que reste-t-il a monter
+    let resteAMonter = 0;// nb carte restant a monter
+    for(let l=0;l<5;l++)
+	resteAMonter += nbCartesDroite(l) - nbCartesGauche(l);
+    if (resteAMonter==0) {
+	gagne();
+	return;
+    }
     let res = resume(num);
     historique.push(res);
 }  // FIN function work()    
