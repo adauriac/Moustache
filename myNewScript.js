@@ -47,21 +47,26 @@ let bandeauEnHaut = 80; // pour les boutons
 //                      FIN PARAMETRES MODIFIABLES
 // ****************************************************************
 // parametre de la tabelette ou ordi
-var isTouch = 'ontouchstart' in document.documentElement;
-let C = screen.width; // nombre de colonnes de pixels
-let L = screen.height; // nombre de lignes de pixels
-var tutoVideo = document.getElementById("tutoVideo"); 
+let calledInBrowser = true
+let C,L,elements;
+if (calledInBrowser) { // realtif a l'interface avec html
+    var isTouch = 'ontouchstart' in document.documentElement;
+    C = screen.width; // nombre de colonnes de pixels
+    L = screen.height; // nombre de lignes de pixels
+    var tutoVideo = document.getElementById("tutoVideo"); 
+    elements = document.getElementsByClassName("mydiv");
+    for (let i = 0; elements[i]; i++)
+	makeElementDraggable(elements[i]);
+    let helpBtn = document.getElementById("help")
+    helpBtn.style.left = C/2-cCarte/2+"px";
+    helpBtn.style.top = bandeauEnHaut+"px";
+}
 
 // declaration
 var num = new Array(5*(20+1+20)); // 5 lignes et 20 cases a gauche 1 case centrale et 20 cases a droite
 num.fill(-1); // -1 veut dire pas de carte. ATTENTION en colonne centrake (col=0) il y a une pile de cartes
 //Make the DIV element draggagle:
-let elements = document.getElementsByClassName("mydiv");
-for (let i = 0; elements[i]; i++)
-    makeElementDraggable(elements[i]);
-let helpBtn = document.getElementById("help")
-helpBtn.style.left = C/2-cCarte/2+"px";
-helpBtn.style.top = bandeauEnHaut+"px";
+
 let coup,tour;
 let myRnd = new RandomSeeded();  // random Generator
 let historique;
@@ -88,24 +93,26 @@ function playTuto() {
 // ************************************************************
 
 function go(seedSt) {
-    // let seedSt = getParameter("seedId"); // on lit dans l'url
-    // seedSt= document.getElementById("seedId").value
     if (!isNaN(parseInt(seedSt)))  // si seedSt est un nombre
 	myRnd.seed(parseInt(seedSt));
     else
 	myRnd.reSeed();
     seed = myRnd.seedUsed;  // si c'etait -1 ce sera la valeur effectivement utilisee
-    document.getElementById("seedId").value = myRnd.seedUsed;
     historique = [];
     tour = 1;
     coup = 1;
-    updateInfo();
+    if (calledInBrowser) {
+	document.getElementById("seedId").value = myRnd.seedUsed;
+	updateInfo();
+    }
     if (1)
 	poseLesCartesNonGraphique();
     else
 	poseLesCartesSpecial(); // qui a servi a la video tutotielle
-    // asciiOut();
-    showAllCardOnScreen();
+    if (calledInBrowser)
+	showAllCardOnScreen();
+    else
+	asciiOut();
     let res = resume(num);
     historique.push(res);
 }  // FIN function go(seedSt)
