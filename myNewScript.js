@@ -47,8 +47,17 @@ let bandeauEnHaut = 80; // pour les boutons
 //                      FIN PARAMETRES MODIFIABLES
 // ****************************************************************
 // parametre de la tabelette ou ordi
-let calledInBrowser = true
 let C,L,elements;
+let calledInBrowser = true
+// est-ce que ce script a ete appelle depuis un fichier html
+// ou directement depuis la ligne de commande : node script.js
+
+try {
+    elements = document.getElementsByClassName("mydiv");
+}
+catch(err) {
+    calledInBrowser = false
+}
 if (calledInBrowser) { // realtif a l'interface avec html
     var isTouch = 'ontouchstart' in document.documentElement;
     C = screen.width; // nombre de colonnes de pixels
@@ -258,7 +267,7 @@ function asciiOut() {
 	    n0 += 1
     oo=""
     for (let l=0;l<5;l++) {
-	for(let c=-20;c<=20;c++) {
+	for(let c=nbCartesGauche(l);c<=nbCartesDroite(l);c++) {
 	    let k = getInPlaceNonGraphique(l,c);
 	    if (c==1)
 		oo += " ";
