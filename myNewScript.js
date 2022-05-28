@@ -48,17 +48,15 @@ let bandeauEnHaut = 80; // pour les boutons
 // ****************************************************************
 // parametre de la tabelette ou ordi
 let C,L,elements;
-let calledInBrowser = true
 // est-ce que ce script a ete appelle depuis un fichier html
 // ou directement depuis la ligne de commande : node script.js
+let calledInBrowser;
+if (typeof document === "undefined")
+    calledInBrowser = false;
+else
+    calledInBrowser = true;
 
-try {
-    elements = document.getElementsByClassName("mydiv");
-}
-catch(err) {
-    calledInBrowser = false
-}
-if (calledInBrowser) { // realtif a l'interface avec html
+if (calledInBrowser) { // relatif a l'interface avec html
     var isTouch = 'ontouchstart' in document.documentElement;
     C = screen.width; // nombre de colonnes de pixels
     L = screen.height; // nombre de lignes de pixels
