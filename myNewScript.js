@@ -800,8 +800,6 @@ function updateInfo() {
 
 function makeElementDraggable(elmnt) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    var posInitX=0,posInitY=0,posFinX=0,posFinY=0;
-    var initialX=-1,initialY=-1;
     var zInitial, topInitial,leftInitial,laLineInitial,laColInitial,indiceInitial,carteTraitee,coteInitial;
     /*  move the DIV from anywhere inside the DIV:*/
     elmnt.style.zIndex = -1;
@@ -815,8 +813,6 @@ function makeElementDraggable(elmnt) {
       	// get the mouse cursor position at startup:
       	pos3 = e.clientX;
       	pos4 = e.clientY;
-	posInitX = e.pageX;
-      	posInitY = e.pageY;
 	topInitial =elmnt.style.top;
       	leftInitial = elmnt.style.left ;
 	zInitial = elmnt.style.zIndex;	
@@ -863,8 +859,6 @@ function makeElementDraggable(elmnt) {
       	e.preventDefault(); // rajoute par JC
       	document.onmouseup = null;
       	document.onmousemove = null;
-	posFinX = e.clientX;
-      	posFinY = e.clientY;
 	let laLigneFinal = dsQuelleLigneEstCurseur(e.pageY) ;
 	if (laLigneFinal>=5) { //on ne peut poser de cartesur cette ligne
 	    elmnt.style.top = topInitial;
