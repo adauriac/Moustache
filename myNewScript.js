@@ -43,6 +43,7 @@ let lCarte = 96,cCarte = 75; // les dim sont 75x96
 let espaceMonte = 20; // espace entre la colonne ou on monte et ses voisines
 let chevauche = 40; // chevauchement des cartes
 let bandeauEnHaut = 80; // pour les boutons
+let bidon = 0
 let cpt = 0;
 // ****************************************************************
 //                      FIN PARAMETRES MODIFIABLES
@@ -120,11 +121,26 @@ function go(seedSt) {
 	//poseLesCartesSpecial(); // qui a servi a la video tutotielle
 	poseLesCartesSpecial2(); // 
     if (calledInBrowser) {
-	showAllCardOnScreen();
-    } else {
-	if (0)
+	showAllCardsOnScreen();
+    } else {  // appel en script pour resoudre 
+	let verbose = 0
+	for(let i=2;i<process.argv.length;i++) {
+	    let arg = process.argv[i];
+	    if (arg.slice(0,8) == "verbose=") {
+		verbose = arg.match(/\d+/)
+		continue
+	    } // fin verbose
+	    if (arg.slice(0,2) == "d=") {
+		// apres d c'est la string qui represente le deck initial
+		choix(arg.slice(2))
+		continue
+	    } // fin d=
+	    
+	}
+	console.log(a2s(resume(num)))
+	if (verbose)
 	    asciiOut();
-	solve();
+	solve(verbose);
     }
     let res = resume(num);
     historique.push(res);
@@ -147,7 +163,7 @@ function nextTour() {
 	alert("tricheurs !!!");
     reposeLesCartesNonGraphique();
     // asciiOut();
-    showAllCardOnScreen();
+    showAllCardsOnScreen();
     tour ++;
     coup = 1;
     updateInfo();
@@ -163,7 +179,7 @@ function annuleDernierCoup(){
     historique.pop();
     let ancien = historique[historique.length-1];
     deResume(ancien) ;
-    showAllCardOnScreen();
+    showAllCardsOnScreen();
     coup--;
     if (coup==0)
 	alert("oops coup 0")
@@ -262,33 +278,6 @@ function help() {
     }
     alert("il reste "+resteAMonter+" cartes a monter et il y a "+zMatch+" matchs et "+zMont+" carte(s) qui monte(nt)");
 }  // FIN function help()
-// ************************************************************
-
-function asciiOut() {
-    n0=0;
-    for(let l=1;l<5;l++)
-	if (getInPlaceNonGraphique(l,0)!=-1)
-	    n0 += 1
-    oo=""
-    for (let l=0;l<5;l++) {
-	for(let c=nbCartesGauche(l);c<=nbCartesDroite(l);c++) {
-	    let k = getInPlaceNonGraphique(l,c);
-	    if (c==1)
-		oo += " ";
-	    oo += k+" ";
-	    if (c==-1)
-		oo+=" ";
-	}
-	oo +="\n";
-    }
-    console.log(oo);
-    ooo=""
-    for (let l=1;l<5;l++) {
-	let k = getInPlaceNonGraphique(l,0);
-	ooo += k+" "
-    }
-    console.log(ooo);
-}  // FIN function asciiOut()
 // ************************************************************
 
 function poseLesCartesSpecial2() {
@@ -618,28 +607,6 @@ function shuffle(array) {
 }  // FIN function shuffle(array)
 // *******************************************************************
 
-function showOneCardOnScreen(carte,ligne,col) {
-    // affiche la carte carte en position ligne col
-    if ((carte<0) || (carte>=52)){
-	alert("oops showOneCardOnScreen: carte invalide "+carte);
-    }
-    if ((ligne<0) || (ligne>=5) || (col<0) || (col>=20+1+20)){
-    }
-    // ici la carte et la position sont oks
-    let X = C/2-cCarte/2 + col*cCarte;
-    if (col<0)
-	X -= espaceMonte - chevauche*(-col-1);
-    else if (col>0)
-	X += espaceMonte - chevauche*(col-1);
-    let Y = ligne*lCarte;
-    Y += bandeauEnHaut;
-    elements[carte].style.left = X+"px"; // c'est la colonne
-    elements[carte].style.top = Y+"px"; // c'est la ligne
-    let z = (col<0) ? -col : col;
-    elements[carte].style.zIndex = z;
-}  // FIN function showOneCardOnOnScreen(carte,ligne,col) 
-// *******************************************************************
-
 function dsQuelleColonneEstCurseur(x) {
     let col=-1;
     if ((C/2-cCarte/2<x) && (x<C/2+cCarte/2))
@@ -678,17 +645,50 @@ function dsQuelleLigneEstCurseur(y) {
 }  // FIN function dsQuelleLigneEstCurseur()
 // ******************************************************************
 
-function showAllCardOnScreen() {
+function showOneCardOnScreen(carte,ligne,col) {
+    // affiche la carte carte en position ligne col
+    if ((carte<0) || (carte>=52)){
+	alert("oops showOneCardOnScreen: carte invalide "+carte);
+    }
+    if ((ligne<0) || (ligne>=5) || (col<-20) || (col>20)){
+ 	alert("oops showOneCardOnScreen: position invalide "+ligne+" "+col);
+   }
+    // ici la carte et la position sont oks
+    let X = C/2-cCarte/2 + col*cCarte;
+    if (col<0)
+	X -= espaceMonte - chevauche*(-col-1);
+    else if (col>0)
+	X += espaceMonte - chevauche*(col-1);
+    let Y = ligne*lCarte;
+    Y += bandeauEnHaut;
+    elements[carte].style.left = X+"px"; // c'est la colonne
+    elements[carte].style.top = Y+"px"; // c'est la ligne
+    let z = (col<0) ? -col : col;
+    elements[carte].style.zIndex = z;
+}  // FIN function showOneCardOnScreen(carte,ligne,col) 
+// *******************************************************************
+
+function showAllCardsOnScreen() {
     // affiche toutes les cartes
+    for(let k=0;k<elements.length;k++) {
+	elements[k].style.left = "0px";
+	elements[k].style.top = "0px";
+    }
     for(let l=0;l<5;l++) {
 	for (let c=-20;c<=20;c++) {
 	    let k = getInPlaceNonGraphique(l,c);
 	    if (k==-1) // donc pas de carte
 		continue;
-	    showOneCardOnScreen(k,l,c);
+	    if (c==0) { // colonne du centre on entasse les cartes !
+		let val = valeur(k)
+		let coul = couleur(k)
+		for(let i=0;i<=val;i++)
+		    showOneCardOnScreen(coul*13+i,l,c);
+	    } else // pas la colonne du milieu
+		showOneCardOnScreen(k,l,c);
 	}
     }
-}  // FIN function showAllCardOnScreen() 
+}  // FIN function showAllCardsOnScreen() 
 // *******************************************************************
 
 function getInPlaceNonGraphique(l,c) { //quoi en l,c
@@ -871,7 +871,7 @@ function makeElementDraggable(elmnt) {
 	if ((typeof caseDest) == "number") {
 	    num[index(laLigneInitial,laColInitial)] = -1; // plus de carte en initial
 	    num[caseDest] = carteTraitee; // elle est mise en Dest
-	    showAllCardOnScreen();
+	    showAllCardsOnScreen();
 	    check();
 	    // ici on a la nouvelle position acceptee false=pas d'alerte sur les mouve possibles
 	    work();
@@ -932,7 +932,7 @@ function makeElementDraggable(elmnt) {
 // *******************************************************************
 
 function check() {
-    // return 0 si Ok et un code d'erreur>0 refletant les fifferents cas
+    // return 0 si le tableau global num est Ok et un code d'erreur>0 refletant les fdfferents cas
     var vu = new Array(52); // les cartes effectivement presentes
     vu.fill(0);
     for(let l=0;l<5;l++) {
@@ -1226,7 +1226,7 @@ function descendant2(cur,verbose=0) {
 	console.log(indexCarteAuBord)
 	console.log("carteMatchantes :")
 	console.log(carteMatchantes)
-	asciiOut2(cur)
+	asciiOut(cur)
     }
     for (let k=0;k<carteAuBord.length;k++) { // boucle sur les cartes du bord	
 	for (let q=0;q<carteMatchantes.length;q++) { // boucle sur destination
@@ -1248,7 +1248,7 @@ function descendant2(cur,verbose=0) {
 function forceTousMontagesInPlace(num,verbose=0) {
     if (verbose){
 	console.log("entre dans forceTousMontagesInPlace");
-	asciiOut2(num)
+	asciiOut(num)
     }
     while (true) {
 	let b = forceUnMontageInPlace(num,verbose)
@@ -1256,7 +1256,7 @@ function forceTousMontagesInPlace(num,verbose=0) {
 	    break;
     }
     if (verbose) {
-	asciiOut2(num)
+	asciiOut(num)
 	console.log("quitte forceTousMontagesInPlace");
     }
 }  // FIN function forceTousMontagesInPlace(num)
@@ -1293,7 +1293,7 @@ function forceUnMontageInPlace(num,verbose=0) {
 			num[idest] = src;
 			if (verbose) {
 			    console.log("monte "+src+"="+enClair(src)+" OUI")
-			    asciiOut2(num)
+			    asciiOut(num)
 			    console.log("quite forceUnMontageInPlace")
 			}
 			return 1;
@@ -1310,7 +1310,7 @@ function forceUnMontageInPlace(num,verbose=0) {
 			    num[idest] = src;
 			    if (verbose) {
  				console.log("monte sur"+enClair(src)+"sur ma moustache"+cote)
- 				asciiOut2(num)
+ 				asciiOut(num)
 				console.log("quite forceUnMontageInPlace")
 			    }
 			    return 1;
@@ -1328,7 +1328,7 @@ function forceUnMontageInPlace(num,verbose=0) {
 			num[idest] = src;
 			if (verbose) {
 			    console.log(o+" OUI")
-			    asciiOut2(num)
+			    asciiOut(num)
 			    console.log("quitte forceUnMontageInPlace")
 			}
 			return 1;
@@ -1359,7 +1359,7 @@ function deplaceEtDeckise(num,src,des,verbose=false){
     let carte; //celle qui sera deplacee
     if (verbose){
 	console.log("ds deplaceEtDeckise: ls,cs,ld,cd="+ls+" "+cs+" "+ld+" "+cd)
-	asciiOut2(num)
+	asciiOut(num)
     }
     if (cd != 0) {  // car si la colonne destination est 0 sera montee a la fin
 	carte = num[index(ls,cs)]
@@ -1372,13 +1372,13 @@ function deplaceEtDeckise(num,src,des,verbose=false){
     }
     if (verbose) {
 	console.log("avant de monter de force:")
-	asciiOut2(num)
+	asciiOut(num)
     }
     // il reste a monter ce qui monte
     forceTousMontagesInPlace(num,verbose)
     if (verbose) {
 	console.log("apres avoir monter de force:")
-	asciiOut2(num)
+	asciiOut(num)
     }
     // on traite le fils
     let ans = resume(num)
@@ -1387,19 +1387,18 @@ function deplaceEtDeckise(num,src,des,verbose=false){
 	num[i] = numInitial[i]
     if (verbose) {
 	console.log("apres restauration:")
-	asciiOut2(num)
+	asciiOut(num)
     }
     return ans;
 }  // FIN function deplaceEtDeckise(cur,src,des)
 // ************************************************************
 
-function solve() {
+function solve(verbose) {
     if (calledInBrowser) {
 	alert("still buggy try later")
 	return;
     }
     forceTousMontagesInPlace(num);
-    let verbose = 0;
     let  res = resume(num);
     const pile = [];
     const prof = [];
@@ -1408,7 +1407,6 @@ function solve() {
     let vus = new Set()
     vus.add(a2s(res))
     let feuilles = new Array()
-    verbose = 0
     while (true) {
 	cpt++;
 	let cur = pile.pop()
@@ -1458,7 +1456,9 @@ function solve() {
 }  // FIN function solve() 
 // ************************************************************
 
-function asciiOut2(cur) {
+function asciiOut(cur) {
+    if (cur==undefined)
+	cur = num
     n0=0;
     for(let l=1;l<5;l++)
 	if (getInPlaceNonGraphique2(cur,l,0)!=-1)
@@ -1475,28 +1475,7 @@ function asciiOut2(cur) {
 	oo +="\n";
     }
     console.log(oo);
-}  // FIN function asciiOut2(cur)
-// ************************************************************
-
-function asciiOut3(cur) {
-    n0=0;
-    for(let l=1;l<5;l++)
-	if (getInPlaceNonGraphique2(cur,l,0)!=-1)
-	    n0 += 1
-    oo=""
-    for (let l=0;l<5;l++) {
-	for(let c=nbCartesGauche2(cur,l);c<=nbCartesDroite2(cur,l);c++) {
-	    let k = getInPlaceNonGraphique2(cur,l,c);
-	    if (c==1)
-		oo += " ";
-	    oo += enClair(k)+" ";
-	    if (c==-1)
-		oo+=" ";
-	}
-	oo +="\n";
-    }
-    console.log(oo);
-}  // FIN function asciiOut3(cur)
+}  // FIN function asciiOut(cur)
 // ************************************************************
 
 function getInPlaceNonGraphique2(curr,l,c) { //quoi en l,c
@@ -1572,3 +1551,32 @@ function analyseFeuille(argu) {
 }  // FIN function analyseFeuille(feuille) 
 // ************************************************************
 
+function choix(deckStr) { // appelle par le bouton choix ou dans go
+    // si appelle par bouton l'argument deckStr sera undefined mais pas utilise
+    // car calledInBrowser ser vrai
+    // affecte le tableau global num en passant par le deck lu dans "zoneEntree"
+    let aux;
+    if (calledInBrowser) {
+	let elt = document.getElementById("zoneEntree")
+	aux = s2a(elt.value)
+    } else aux=s2a(deckStr);
+    if (aux.length!=52) {
+	alert("donnee de longeur "+aux.length+" != 52")
+	return;
+    }
+    num = deResume2(aux)
+    if (check()) {
+	return
+    }
+    if (calledInBrowser)
+	showAllCardsOnScreen();
+    else
+	asciiOut(num)
+}  // FIN choix()
+// ************************************************************
+
+function save() { // appelle par le bouton save : alerte de num
+    let aux = resume(num)
+    alert(a2s(aux))
+}  // FIN save()
+// ************************************************************
