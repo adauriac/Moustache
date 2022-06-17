@@ -87,8 +87,8 @@ if (calledInBrowser) { // relatif a l'interface avec html
 }
 
 // declaration
-var num = new Array(5*(20+1+20)); // 5 lignes et 20 cases a gauche 1 case cenenCtrale et 20 cases a droite
-num.fill(-1); // -1 veut dire pas de carte. ATTENTION en colonne centrake (col=0) il y a une pile de cartes
+var tapisGlobal = new Array(5*(20+1+20)); // 5 lignes et 20 cases a gauche 1 case cenenCtrale et 20 cases a droite
+tapisGlobal.fill(-1); // -1 veut dire pas de carte. ATTENTION en colonne centrake (col=0) il y a une pile de cartes
 //Make the DIV element draggagle:
 
 let coup,tour;
@@ -148,12 +148,12 @@ function go(seedSt) {
 	    } // fin d=
 	}  // fin traitement des parametres de la ligne de cmd
 	if (verbose){
-	    console.log(a2s(resume(num)))
+	    console.log(a2s(resume(tapisGlobal)))
 	    asciiOut();
 	}
 	solve(verbose);
     }
-    let res = resume(num);
+    let res = resume(tapisGlobal);
     historique.push(res);
 }  // FIN function go(seedSt)
 // ************************************************************
@@ -179,7 +179,7 @@ function nextTour() {
     coup = 1;
     updateInfo();
     historique = [];
-    let res = resume(num);
+    let res = resume(tapisGlobal);
     historique.push(res);
 }  // FIN function nextTour()
 // ***********************************************************
@@ -205,18 +205,18 @@ function reposeLesCartesNonGraphique() {
 	    if (c==0)
 		continue;
 	    let i = index(l,c);
-	    let k = num[index(l,c)];
+	    let k = tapisGlobal[index(l,c)];
 	    if (k==-1) // donc pas de carte
 		continue;
 	    reste.push(k);
-	    num[i]= -1;
+	    tapisGlobal[i]= -1;
 	}
     }
     shuffle(reste);
     let col = -1;
     let line = 1;
     for (let i=0;i<reste.length;i++) {
-	num[index(line,col)] = reste[i];
+	tapisGlobal[index(line,col)] = reste[i];
 	line++;
 	if (line==5) { 
 	    line = 1;
@@ -249,13 +249,13 @@ function help() {
     for(var l=0;l<5;l++) {
 	let nbg = nbCartesGauche(l);
 	if (nbg!=0) {
-	    let carteBout = num[index(l,nbg)];
+	    let carteBout = tapisGlobal[index(l,nbg)];
 	    let aux = matchante(carteBout);
 	    carteMatchantes = carteMatchantes.concat(aux);
 	}
 	let nbd = nbCartesDroite(l);
 	if (nbd!=0) {
-	    let carteBout = num[index(l,nbd)];
+	    let carteBout = tapisGlobal[index(l,nbd)];
 	    let aux = matchante(carteBout);
 	    carteMatchantes = carteMatchantes.concat(aux);
 	}
@@ -264,25 +264,25 @@ function help() {
     // cartes montantes
     carteMontantes = [];
     for (let l=1;l<5;l++) 
-	if (num[index(l,0)]==-1){
+	if (tapisGlobal[index(l,0)]==-1){
 	    // case vide tout as peux monter
 	    for(let x=0;x<4;x++)
 		carteMontantes.push(13*x);
-	} else if (num[index(l,0)] != 12)
-	    carteMontantes.push(num[index(l,0)]+1);
+	} else if (tapisGlobal[index(l,0)] != 12)
+	    carteMontantes.push(tapisGlobal[index(l,0)]+1);
     //console.log("carteMontantes "+carteMontantes);
     let zMont = 0;
     let zMatch = 0;
     for(var l=0;l<5;l++) {
      	let nbg = nbCartesGauche(l);
 	if (nbg!=0) {
-    	    let carteTestee = num[index(l,nbg)];
+    	    let carteTestee = tapisGlobal[index(l,nbg)];
 	    zMatch += countEltInList(carteTestee,carteMatchantes);
 	    zMont += countEltInList(carteTestee,carteMontantes);
      	}
 	let nbd = nbCartesDroite(l);
     	if (nbd!=0) {
-     	    let carteTestee = num[index(l,nbd)];
+     	    let carteTestee = tapisGlobal[index(l,nbd)];
 	    zMatch += countEltInList(carteTestee,carteMatchantes);
 	    zMont += countEltInList(carteTestee,carteMontantes);
      	}
@@ -292,7 +292,7 @@ function help() {
 // ************************************************************
 
 function poseLesCartesNonGraphique() {
-    // CONTRUIT LE TABLEAU GLOBAL num EN POSANT
+    // CONTRUIT LE TABLEAU GLOBAL tapisGlobal EN POSANT
     // LES CARTES AVEC LA REGLE DES AS QUI MONTENT DIRECT
     // SI LA CASE CENTRALE DE CETTE LIGNE EST VIDE.
     // 
@@ -302,7 +302,7 @@ function poseLesCartesNonGraphique() {
 	P[i] = i;
     shuffle(P);
     // on reinitilaise
-    num.fill(-1);
+    tapisGlobal.fill(-1);
     let curL = 0;
     let curC = -1;
     for(let i=0;i<52;i++) {
@@ -431,7 +431,7 @@ function getInPlaceNonGraphique(l,c) { //quoi en l,c
 	//alert("oops on demande une carte hors table (get) !");
 	return -1;
     }
-    return num[index(l,c)];
+    return tapisGlobal[index(l,c)];
 } // FIN function getInPlaceNonGraphique(l,c) 
 // *******************************************************************
 
@@ -471,7 +471,7 @@ function putInPlaceNonGraphique(k,l,c) { //quoi en l,c
     }
     if ((k<0-1) || (k>51))
 	alert("oops on veut placer une carte qui n'existe pas !");
-    num[index(l,c)] = k;
+    tapisGlobal[index(l,c)] = k;
 } // FIN function putInPlaceNonGraphique(k,l,c)
 // *******************************************************************
 
@@ -564,7 +564,7 @@ function makeElementDraggable(elmnt) {
 	let nCarteDroite = nbCartesDroite(laLigneInitial);
 	laColInitial = (laColInitial>0) ? min(laColInitial,nCarteDroite) : max(laColInitial,nCarteGauche);
 	indiceInitial = index(laLigneInitial,laColInitial);
-	carteTraitee = num[indiceInitial];
+	carteTraitee = tapisGlobal[indiceInitial];
 	let k = laColInitial<0 ? nbCartesGauche(laLigneInitial): nbCartesDroite(laLigneInitial);
 	k = k<0 ? -k : k;
 	let id = elmnt.id;
@@ -610,8 +610,8 @@ function makeElementDraggable(elmnt) {
 	let coteFinal = deQuelCoteEstCurseur(e.pageX) ; // cote duquel on va tenter de poser
 	let caseDest = isOK(coteFinal,laLigneFinal,carteTraitee);
 	if ((typeof caseDest) == "number") {
-	    num[index(laLigneInitial,laColInitial)] = -1; // plus de carte en initial
-	    num[caseDest] = carteTraitee; // elle est mise en Dest
+	    tapisGlobal[index(laLigneInitial,laColInitial)] = -1; // plus de carte en initial
+	    tapisGlobal[caseDest] = carteTraitee; // elle est mise en Dest
 	    showAllCardsOnScreen();
 	    check();
 	    // ici on a la nouvelle position acceptee false=pas d'alerte sur les mouve possibles
@@ -640,11 +640,11 @@ function makeElementDraggable(elmnt) {
 	if (coteFinal==0) {
 	    // colonne du milieu
 	    caseDest = index(laLigneFinal,0);
-	    if (num[caseDest]==-1)  // case vide : on ne peut poser qu'un as
+	    if (tapisGlobal[caseDest]==-1)  // case vide : on ne peut poser qu'un as
 		return valeur(carteTraitee)==0 ? caseDest: "on ne peut poser qu'un as ici";
 	    // case non vide
-	    ok = (valeur(carteTraitee)==valeur(num[caseDest])+1) &&
-		(couleur(carteTraitee)==couleur(num[caseDest]))
+	    ok = (valeur(carteTraitee)==valeur(tapisGlobal[caseDest])+1) &&
+		(couleur(carteTraitee)==couleur(tapisGlobal[caseDest]))
 	    return ok ? caseDest : enClair(carteTraitee)+" ne matche pas sur colonne centrale";
 	}
 	if (coteFinal==1) {
@@ -653,18 +653,18 @@ function makeElementDraggable(elmnt) {
 	    if (nbCartesDroite(laLigneFinal)==0) 
 		return (laLigneFinal==0)?caseDest : "on ne peut poser une carte sur sur la premiere colonne qu'en moustache"; 
 	    // ici il y a des cartes sur la ligne de destination
-	    poseSur= num[caseDest-1];
+	    poseSur= tapisGlobal[caseDest-1];
 	    ok = ((valeur(poseSur)==valeur(carteTraitee)+1) || (valeur(poseSur)==valeur(carteTraitee)-1));
-	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest-1]));
+	    ok = ok && (couleur(carteTraitee)==couleur(tapisGlobal[caseDest-1]));
 	} else {
 	    // colonne de gauche
 	    caseDest = index(laLigneFinal,nbCartesGauche(laLigneFinal)-1);
 	    if (nbCartesGauche(laLigneFinal)==0) 
 		return (laLigneFinal==0)?caseDest : "on ne peut poser une carte sur sur la premiere colonne qu'en moustache";
 	    // ici il y a des cartes sur la ligne de destination
-	    poseSur= num[caseDest+1];
+	    poseSur= tapisGlobal[caseDest+1];
 	    ok = ((valeur(poseSur)==valeur(carteTraitee)+1) || (valeur(poseSur)==valeur(carteTraitee)-1));
-	    ok = ok && (couleur(carteTraitee)==couleur(num[caseDest+1]));
+	    ok = ok && (couleur(carteTraitee)==couleur(tapisGlobal[caseDest+1]));
 	} // fin test de gauche/centre/droite
 	return ok ? caseDest : enClair(carteTraitee)+ " ne peut aller sur "+enClair(poseSur)+" en "+unindexStr(caseDest);
     } // FIN function isOK()
@@ -673,12 +673,12 @@ function makeElementDraggable(elmnt) {
 // *******************************************************************
 
 function check() {
-    // return 0 si le tableau global num est Ok et un code d'erreur>0 refletant les fdfferents cas
+    // return 0 si le tableau global tapisGlobal est Ok et un code d'erreur>0 refletant les fdfferents cas
     var vu = new Array(52); // les cartes effectivement presentes
     vu.fill(0);
     for(let l=0;l<5;l++) {
 	for(let c=-20;c<20;c++) {
-	    let k = num[index(l,c)];
+	    let k = tapisGlobal[index(l,c)];
 	    if (k==-1) // Pas une carte
 		continue;
 	    if (c==0) {
@@ -707,10 +707,10 @@ function check() {
     // so far so good, testons les trous dans les lignes
     for (let l=0;l<5;l++) {
 	for (let c=-1;c>=-nbCartesGauche(l);c--)
-	    if (num[index(l,c)]==-1) 
+	    if (tapisGlobal[index(l,c)]==-1) 
 		errStr += "une carte mal placee en l,c="+l+","+c+"\n";
 	for (let c=1;c<=nbCartesDroite(l);c++)
-	if (num[index(l,c)]==-1) 
+	if (tapisGlobal[index(l,c)]==-1) 
 		errStr += "check: une carte mal placee en l,c="+l+","+c+"\n";
 	}
     if (errStr!=""){
@@ -748,16 +748,16 @@ function resume(tapis) {
 // ************************************************************
 
 function deResume(resume) {
-    // re-affectation du tableau num a partir de resume
+    // re-affectation du tableau tapisGlobal a partir de resume
     if (typeof resume==='undefined') {
 	alert("deResume appelle avec resume undefined");
 	return;
     }
-    num.fill(-1);
+    tapisGlobal.fill(-1);
     for(let k=0;k<52;k++) {
 	let l,c;
 	[l,c] = unindex(resume[k]);
-	num[index(l,c)]=k;
+	tapisGlobal[index(l,c)]=k;
     }
 }  // FIN function deResume()
 // ************************************************************
@@ -778,7 +778,7 @@ function work() {
 	gagne();
 	return;
     }
-    let res = resume(num);
+    let res = resume(tapisGlobal);
     historique.push(res);
 }  // FIN function work()    
 // ************************************************************
@@ -885,7 +885,7 @@ function deplace(tapis,lSrc,cSrc,lDst,cDst) { // deplacement de carte en (lSrc,c
 	return 0;// en colonne 0 on monte et ne deplace pas
     if ((lSrc==lDst) && (cSrc==cDst))
 	return 0; // sur place !
-    let numWork= [...num]
+    let tapisGlobalWork= [...tapisGlobal]
     if (cDst==0) { // destination = col 1 ou col -1
 	if (lDst!=0)
 	    return 0; // car colonne 1 de NON moustache
@@ -918,7 +918,7 @@ function monte(tapis,lSrc,cSrc,lDst) { // monte de carte en (lSrc,cSrc) vers (lD
     tr("enter monte avec "+lSrc+" "+cSrc+" "+lDst)
     if (lDst==0)
 	return 0; // rien ne va monte en ligne 0
-    let numWork= [...num]
+    let numWork= [...tapisGlobal]
     let carteSrc=numWork[index(lSrc,cSrc)]
     if (carteSrc==-1)
 	return 0
@@ -1052,8 +1052,9 @@ function solve(verbose) {
     // 	alert("still buggy try later")
     // 	return;
     // }
-    forceTousMontagesInPlace(num);
-    let  res = resume(num);
+    let tapisSaved = [...tapisGlobal]
+    forceTousMontagesInPlace(tapisGlobal);
+    let  res = resume(tapisGlobal);
     const pile = []; // pile des deck (deck=tableaux de 52 entiers)
     const prof = [];
     pile.push(res);
@@ -1121,12 +1122,13 @@ function solve(verbose) {
 	alert("feuille avc le moins de carte a monter : "+best)
     else
 	console.log(best)
+    tapisGlobal = [...tapisSaved]
 }  // FIN function solve() 
 // ************************************************************
 
 function asciiOut(cur) {
     if (cur==undefined)
-	cur = num
+	cur = tapisGlobal
     let plusAGauche = 0
     for(let l=0;l<5;l++)
 	if (nbCartesGauche2(cur,l)<plusAGauche)
@@ -1232,7 +1234,7 @@ function analyseFeuille(argu) {
 function choix(deckStr) { // appelle par le bouton choix ou dans go
     // si appelle par bouton l'argument deckStr sera undefined mais pas utilise
     // car calledInBrowser ser vrai
-    // affecte le tableau global num en passant par le deck lu dans "zoneEntree"
+    // affecte le tableau global tapisGlobal en passant par le deck lu dans "zoneEntree"
     let aux;
     if (calledInBrowser) {
 	let elt = document.getElementById("zoneEntree")
@@ -1247,7 +1249,7 @@ function choix(deckStr) { // appelle par le bouton choix ou dans go
 	    process.exit(1)
 	}
     }
-    num = deResume2(aux)
+    tapisGlobal = deResume2(aux)
     if (check()) {
 	return
     }
@@ -1256,8 +1258,8 @@ function choix(deckStr) { // appelle par le bouton choix ou dans go
 }  // FIN choix()
 // ************************************************************
 
-function save() { // appelle par le bouton save : alerte de num
-    let aux = resume(num)
+function save() { // appelle par le bouton save : alerte de tapisGlobal
+    let aux = resume(tapisGlobal)
     alert(a2s(aux))
 }  // FIN save()
 // ************************************************************
@@ -1265,7 +1267,7 @@ function save() { // appelle par le bouton save : alerte de num
 function listDescendants(tapis,verbose=0) {
     // recoit un tapis
     // retourne la liste des deck des descendants
-    // travail sur num qui est global
+    // travail sur tapisGlobal qui est global
     // on d'abord ce qui peut
     // on liste les index des bords de ligne
     // on essaie de deplacer sans tenir compte de la moustache
