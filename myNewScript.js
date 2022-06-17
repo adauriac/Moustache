@@ -1,3 +1,18 @@
+// Ce script est appele
+//   soit lors du chargement de la page dragNew.html
+//   soit en cli node
+
+// en mode cli il resoud une postion au hasard ou une postion donnee sur la cli
+//      arguments:  verbose=%d
+//                  d=61_148_181_21_..._
+// en mode web il repond aux boutons et interagit via document.getBy...
+
+// Le tapis est un tableau de taille 5 lignes et 20+1+20 colonnes, linearise 
+// comme unidimensionnel 5*(20+1+20) qui contient -1 si case vide sinon
+// l'entier coul*13+val
+
+// Le deck est un tableau de taille 52 qui contient la postion sur le tapis
+// comme l'index de chaque carte sur le tapis: (l,c)-> (20+1+20)*l+(c+20);
 
 class RandomSeeded {
     // Si la fonction random() est appelee sans que seed() n'ai ete appelee avant
@@ -115,11 +130,7 @@ function go(seedSt) {
 	document.getElementById("seedId").value = myRnd.seedUsed;
 	updateInfo();
     }
-    if (1)
-	poseLesCartesNonGraphique();
-    else
-	//poseLesCartesSpecial(); // qui a servi a la video tutotielle
-	poseLesCartesSpecial2(); // 
+    poseLesCartesNonGraphique(); // sera perdu si une conf special est demandee par argu en cmd line
     if (calledInBrowser) {
 	showAllCardsOnScreen();
     } else {  // appel en script pour resoudre 
@@ -127,7 +138,7 @@ function go(seedSt) {
 	for(let i=2;i<process.argv.length;i++) {
 	    let arg = process.argv[i];
 	    if (arg.slice(0,8) == "verbose=") {
-		verbose = arg.match(/\d+/)
+		verbose = parseInt(arg.slice(8))
 		continue
 	    } // fin verbose
 	    if (arg.slice(0,2) == "d=") {
@@ -135,11 +146,11 @@ function go(seedSt) {
 		choix(arg.slice(2))
 		continue
 	    } // fin d=
-	    
-	}
-	console.log(a2s(resume(num)))
-	if (verbose)
+	}  // fin traitement des parametres de la ligne de cmd
+	if (verbose){
+	    console.log(a2s(resume(num)))
 	    asciiOut();
+	}
 	solve(verbose);
     }
     let res = resume(num);
@@ -280,280 +291,6 @@ function help() {
 }  // FIN function help()
 // ************************************************************
 
-function poseLesCartesSpecial2() {
-    num[15] = 25;
-    num[16] = 47;
-    num[17] = 24;
-    num[18] = 0;
-    num[19] = 10;
-    num[20] = -1;
-    num[21] = 20;
-    num[22] = 42;
-    num[23] = 27;
-    num[24] = 29;
-    num[25] = 22;
-    
-    num[15+41] = 17;
-    num[16+41] = 5;
-    num[17+41] = 36;
-    num[18+41] = 35;
-    num[19+41] = 50;
-    num[20+41] = -1;
-    num[21+41] = 14;
-    num[22+41] = 34;
-    num[23+41] = 28;
-    num[24+41] = 4;
-    num[25+41] = 37;
-    
-    num[15+2*41] = 2;
-    num[16+2*41] = 6;
-    num[17+2*41] = 1;
-    num[18+2*41] = 30;
-    num[19+2*41] = 49;
-    num[20+2*41] = 13;
-    num[21+2*41] = 12;
-    num[22+2*41] = 15;
-    num[23+2*41] = 41;
-    num[24+2*41] = 21;
-    num[25+2*41] = 18;
-    
-    num[15+3*41] = 3;
-    num[16+3*41] = 38;
-    num[17+3*41] = 7;
-    num[18+3*41] = 8;
-    num[19+3*41] = 45;
-    num[20+3*41] = 26;
-    num[21+3*41] = 31;
-    num[22+3*41] = 32;
-    num[23+3*41] = 23;
-    num[24+3*41] = 39;
-    num[25+3*41] = 46;
-    
-    num[15+4*41] = 33;
-    num[16+4*41] = 43;
-    num[17+4*41] = 9;
-    num[18+4*41] = 11;
-    num[19+4*41] = 48;
-    num[20+4*41] = -1;
-    num[21+4*41] = 19;
-    num[22+4*41] = 44;
-    num[23+4*41] = 40;
-    num[24+4*41] = 51;
-    num[25+4*41] = 16;
-}  // FIN function poseLesCartesSpecial2() 
-// ***********************************************************************************
-    
-// seed= 51154
-function poseLesCartesSpecial() {
-   num[0] = -1;
-   num[1] = -1;
-   num[2] = -1;
-   num[3] = -1;
-   num[4] = -1;
-   num[5] = -1;
-   num[6] = -1;
-   num[7] = -1;
-   num[8] = -1;
-   num[9] = -1;
-   num[10] = -1;
-   num[11] = -1;
-   num[12] = -1;
-   num[13] = -1;
-   num[14] = 46;
-   num[15] = 40;
-   num[16] = 26;
-   num[17] = 15;
-   num[18] = 5;
-   num[19] = 31;
-   num[20] = -1;
-   num[21] = 27;
-   num[22] = 38;
-   num[23] = 0;
-   num[24] = 39;
-   num[25] = 42;
-   num[26] = -1;
-   num[27] = -1;
-   num[28] = -1;
-   num[29] = -1;
-   num[30] = -1;
-   num[31] = -1;
-   num[32] = -1;
-   num[33] = -1;
-   num[34] = -1;
-   num[35] = -1;
-   num[36] = -1;
-   num[37] = -1;
-   num[38] = -1;
-   num[39] = -1;
-   num[40] = -1;
-   num[41] = -1;
-   num[42] = -1;
-   num[43] = -1;
-   num[44] = -1;
-   num[45] = -1;
-   num[46] = -1;
-   num[47] = -1;
-   num[48] = -1;
-   num[49] = -1;
-   num[50] = -1;
-   num[51] = -1;
-   num[52] = -1;
-   num[53] = -1;
-   num[54] = -1;
-   num[55] = -1;
-   num[56] = 37;
-   num[57] = 1;
-   num[58] = 14;
-   num[59] = 18;
-   num[60] = 19;
-   num[61] = -1;
-   num[62] = 3;
-   num[63] = 4;
-   num[64] = 24;
-   num[65] = 12;
-   num[66] = 2;
-   num[67] = -1;
-   num[68] = -1;
-   num[69] = -1;
-   num[70] = -1;
-   num[71] = -1;
-   num[72] = -1;
-   num[73] = -1;
-   num[74] = -1;
-   num[75] = -1;
-   num[76] = -1;
-   num[77] = -1;
-   num[78] = -1;
-   num[79] = -1;
-   num[80] = -1;
-   num[81] = -1;
-   num[82] = -1;
-   num[83] = -1;
-   num[84] = -1;
-   num[85] = -1;
-   num[86] = -1;
-   num[87] = -1;
-   num[88] = -1;
-   num[89] = -1;
-   num[90] = -1;
-   num[91] = -1;
-   num[92] = -1;
-   num[93] = -1;
-   num[94] = -1;
-   num[95] = -1;
-   num[96] = -1;
-   num[97] = 47;
-   num[98] = 20;
-   num[99] = 33;
-   num[100] = 45;
-   num[101] = 17;
-   num[102] = 13;
-   num[103] = 48;
-   num[104] = 34;
-   num[105] = 23;
-   num[106] = 25;
-   num[107] = 10;
-   num[108] = -1;
-   num[109] = -1;
-   num[110] = -1;
-   num[111] = -1;
-   num[112] = -1;
-   num[113] = -1;
-   num[114] = -1;
-   num[115] = -1;
-   num[116] = -1;
-   num[117] = -1;
-   num[118] = -1;
-   num[119] = -1;
-   num[120] = -1;
-   num[121] = -1;
-   num[122] = -1;
-   num[123] = -1;
-   num[124] = -1;
-   num[125] = -1;
-   num[126] = -1;
-   num[127] = -1;
-   num[128] = -1;
-   num[129] = -1;
-   num[130] = -1;
-   num[131] = -1;
-   num[132] = -1;
-   num[133] = -1;
-   num[134] = -1;
-   num[135] = -1;
-   num[136] = -1;
-   num[137] = -1;
-   num[138] = 51;
-   num[139] = 16;
-   num[140] = 9;
-   num[141] = 7;
-   num[142] = 35;
-   num[143] = -1;
-   num[144] = 8;
-   num[145] = 50;
-   num[146] = 28;
-   num[147] = 43;
-   num[148] = 11;
-   num[149] = -1;
-   num[150] = -1;
-   num[151] = -1;
-   num[152] = -1;
-   num[153] = -1;
-   num[154] = -1;
-   num[155] = -1;
-   num[156] = -1;
-   num[157] = -1;
-   num[158] = -1;
-   num[159] = -1;
-   num[160] = -1;
-   num[161] = -1;
-   num[162] = -1;
-   num[163] = -1;
-   num[164] = -1;
-   num[165] = -1;
-   num[166] = -1;
-   num[167] = -1;
-   num[168] = -1;
-   num[169] = -1;
-   num[170] = -1;
-   num[171] = -1;
-   num[172] = -1;
-   num[173] = -1;
-   num[174] = -1;
-   num[175] = -1;
-   num[176] = -1;
-   num[177] = -1;
-   num[178] = -1;
-   num[179] = 21;
-   num[180] = 36;
-   num[181] = 29;
-   num[182] = 22;
-   num[183] = 49;
-   num[184] = -1;
-   num[185] = 32;
-   num[186] = 6;
-   num[187] = 30;
-   num[188] = 41;
-   num[189] = 44;
-   num[190] = -1;
-   num[191] = -1;
-   num[192] = -1;
-   num[193] = -1;
-   num[194] = -1;
-   num[195] = -1;
-   num[196] = -1;
-   num[197] = -1;
-   num[198] = -1;
-   num[199] = -1;
-   num[200] = -1;
-   num[201] = -1;
-   num[202] = -1;
-   num[203] = -1;
-   num[204] = -1;
-}
-// FIN function poseLesCartesSpecial()
-// ******************************************************
-
 function poseLesCartesNonGraphique() {
     // CONTRUIT LE TABLEAU GLOBAL num EN POSANT
     // LES CARTES AVEC LA REGLE DES AS QUI MONTENT DIRECT
@@ -570,8 +307,6 @@ function poseLesCartesNonGraphique() {
     let curC = -1;
     for(let i=0;i<52;i++) {
 	let j = P[i];
-	//	let val = j%13;
-	//	let coul = (j-val)/13;
 	let val = valeur(j);
 	let coul = couleur(j);
 	let k;
@@ -763,11 +498,14 @@ function onPeutPrendre(line,col) {
 }  // FIN function onPeutPrendre(line,col) 
 // *******************************************************************
 
-function nbCartesGauche(line) {
+function nbCartesGauche(line) { // EN REALITE C'EST - DONC UN NBRE NEGATIF
     if ((line<0) || (line>5)) {
 	//alert("nbCartesGauche: line="+line);
 	return -1;
     }
+   // pas de carte return 0
+    // une carte return -1
+    // deux cartes return -2 etc
     let col = -1;
     while (true) {
 	if (getInPlaceNonGraphique(line,col)==-1)
@@ -779,6 +517,9 @@ function nbCartesGauche(line) {
 // *******************************************************************
 
 function nbCartesDroite(line) {
+   // pas de carte return 0
+    // une carte return -1
+    // deux cartes return -2 etc
    if ((line<0) || (line>5)) {
 	//alert("nbCartesGauche: line="+line);
 	return -1;
@@ -980,86 +721,13 @@ function check() {
 }  // FIN function check()
 // *******************************************************************
 
-function posePersoNonGraphique() {
-    // bug trouve par JA
-    num.fill(-1);
-// ligne 0
-    num [index(0,-4)] = 9;
-    num [index(0,-3)] = 8;
-    num [index(0,-2)] = 7;
-    num [index(0,-1)] = 6;
-    
-    num [index(0,1)] = 38;
-// ligne 1
-    num [index(1,-4)] = 17;
-    num [index(1,-3)] = 31;
-    num [index(1,-2)] = 46;
-    num [index(1,-1)] = 25;
-    
-    num [index(1,0)] = 5;
-    
-    num [index(1,1)] = 32;
-    num [index(1,2)] = 44;
-    num [index(1,3)] = 23;
-    num [index(1,4)] = 24;
-// ligne 2
-    num [index(2,-4)] = 18;
-    num [index(2,-3)] = 50;
-    num [index(2,-2)] = 49;
-    num [index(2,-1)] = 47;
-    
-    num [index(2,0)] = 13;
-    
-    num [index(2,1)] = 15;
-    num [index(2,2)] = 30;
-    num [index(2,3)] = 33;
-    num [index(2,4)] = 12;
-// ligne 3
-    num [index(3,-4)] = 14;
-    num [index(3,-3)] = 20;
-    num [index(3,-2)] = 43;
-    num [index(3,-1)] = 19;
-    
-    num [index(3,0)] = 42;
-    
-    num [index(3,1)] = 45;
-    num [index(3,2)] = 16;
-    num [index(3,3)] = 11;
-    num [index(3,4)] = 34;
-// ligne 4
-    num [index(4,-4)] = 36;
-    num [index(4,-3)] = 35;
-    num [index(4,-2)] = 21;
-    num [index(4,-1)] = 48;
-    
-    num [index(4,0)] = 29;
-    
-    num [index(4,1)] = 10;
-    num [index(4,2)] = 22;
-    num [index(4,3)] = 37;
-    num [index(4,4)] = 51;
-
-    // pour cacher les cartes non posees
-    // quelles sont-elles ?
-    var vu = new Array(52); // les cartes effectivement presentes
-    vu.fill(0);
-    // for(let l=0;l<5;l++) {
-    // 	for(let c=-20;c<20;c++) {
-    // 	    let k = num[index(l,c)];
-    // 	    if (k==-1) // Pas une carte
-    // 		continue;
-    // 	    vu[k] = 1;
-
-}  // FIN function posePersoNonGraphique() 
-// ************************************************************
-
-function resume(num) {
-    isUndefined(num,true)
+function resume(tapis) {
+    isUndefined(tapis,true)
     var pos = new Array(52); // les cartes effectivement presentes
     pos.fill(-1);
     for(var l=0;l<5;l++)
 	for(c=-20;c<20;c++) {
-	    let k = num[index(l,c)];
+	    let k = tapis[index(l,c)];
 	    if (verbose)
 		console.log("l="+l+" c="+c+" k="+k)
 	    if (k==-1) // Pas une carte
@@ -1076,7 +744,7 @@ function resume(num) {
 		pos[k] = index(l,c); // ce n'est PAS une pile
 	}
    return pos;
-}  // FIN function resume()
+}  // FIN function resume(tapis)
 // ************************************************************
 
 function deResume(resume) {
@@ -1198,71 +866,92 @@ function s2a(S) { // return the array
 }  // FIN a2s(A)
 // ******************************************************************
 
-function descendant2(cur,verbose=0) {
-    // retourne la liste des descendants
-    let desc = []
-    // par construction il n'y a pas de cartes montantes
-    carteAuBord = []
-    indexCarteAuBord = []
-    for (let l=0;l<5;l++) {
-	let bordG = nbCartesGauche2(cur,l) ;
-	let bordD = nbCartesDroite2(cur,l) ;
-	let g = getInPlaceNonGraphique2(cur,l,bordG);
-	let d = getInPlaceNonGraphique2(cur,l,bordD);
-	if (g!=-1) {
-	    carteAuBord.push(g)
-	    indexCarteAuBord.push([l,bordG])
-	}
-	if (d!=-1) {
-	    carteAuBord.push(d)
-	    indexCarteAuBord.push([l,bordD])
-	}
-    }
-    const carteMatchantes = carteAuBord.map(matchante);
-    if (verbose) {
-	console.log("carteAuBord :")
-	console.log(carteAuBord)
-	console.log("indexCarteAuBord :")
-	console.log(indexCarteAuBord)
-	console.log("carteMatchantes :")
-	console.log(carteMatchantes)
-	asciiOut(cur)
-    }
-    for (let k=0;k<carteAuBord.length;k++) { // boucle sur les cartes du bord	
-	for (let q=0;q<carteMatchantes.length;q++) { // boucle sur destination
-	    if (verbose)
-		console.log("k,q="+k+" "+q)
-	    for (let i=0;i<carteMatchantes[q].length;i++) {
-		if (carteAuBord[k]!=carteMatchantes[q][i])
-		    continue; // pas un match
-		// ici on a le match de carteAuBord[k] avec carteMatchantes[q][i]
-		let enfant = deplaceEtDeckise(cur,indexCarteAuBord[k] ,indexCarteAuBord[q])
-		desc.push(enfant)
-	    }
-	}
-    }
-    return desc;
-}  // FIN function descendant2(cur) 
-// ************************************************************
+function sign(i) {
+    if (i<0)
+	return -1
+    if (i>0)
+	return 1
+    if (i==0)
+	return 0;
+    return undefined
+}  // FIN function sign(i) {
+// ******************************************************************
 
-function forceTousMontagesInPlace(num,verbose=0) {
+function deplace(tapis,lSrc,cSrc,lDst,cDst) { // deplacement de carte en (lSrc,cSrc) vers (lDst,cDst)
+    // si pas possible return la valeur 0,
+    // si possible le NOUVEAU deck (pas le tapis !)
+    tr("enter deplace avec "+lSrc+" "+cSrc+" "+lDst+" "+cDst)
+    if (cDst==0)
+	return 0;// en colonne 0 on monte et ne deplace pas
+    if ((lSrc==lDst) && (cSrc==cDst))
+	return 0; // sur place !
+    let numWork= [...num]
+    if (cDst==0) { // destination = col 1 ou col -1
+	if (lDst!=0)
+	    return 0; // car colonne 1 de NON moustache
+	// ici on veut monter en colonne 1 ou -1 de moustache toujours OUI
+	cDst += sign(cDst)
+	numWork[index(lDstt,cDst)]=numWork[index(lSrc,cSrc)]
+	numWork[index(lSrc,cSrc)]=-1
+	return resume(numWork)
+    } // fin if ((cDst==-1) || (cDst==1)) {
+    // ici on tente de deplacer en colonne>1
+    let carteSrc=numWork[index(lSrc,cSrc)]
+    if (carteSrc==-1)
+	return 0
+    let carteDes=numWork[index(lDst,cDst+sign(cDst))]
+    if (carteDes!=-1)
+	return 0
+    if (couleur(carteSrc) != couleur(carteDes)) // pas meme couleur
+	return 0 ;
+    let d = valeur(carteSrc) - valeur(carteDes)
+    if ((d!=1)&&(d!=-1))
+	return 0; // pas consecutives
+    tr("OUI!")
+    return resume(numWork)
+}  // FINfunction deplace(lSrc,cSrc,lDst,cDst)
+// ******************************************************************
+
+function monte(tapis,lSrc,cSrc,lDst) { // monte de carte en (lSrc,cSrc) vers (lDst,0)
+    // si pas possible return la valeur 0,
+    // si possible le NOUVEAU deck
+    tr("enter monte avec "+lSrc+" "+cSrc+" "+lDst)
+    if (lDst==0)
+	return 0; // rien ne va monte en ligne 0
+    let numWork= [...num]
+    let carteSrc=numWork[index(lSrc,cSrc)]
+    if (carteSrc==-1)
+	return 0
+    let carteDes=numWork[index(lDst,0)]
+    if (carteDes!=-1)
+	return 0
+    if (couleur(carteSrc) != couleur(carteDes)) // pas meme couleur
+	return 0 ;
+    let d = valeur(carteSrc) - valeur(carteDes)
+    if ((d!=1)&&(d!=-1))
+	return 0; // pas consecutives
+     return resume(numWork)   
+ }  // FINfunction monte(lSrc,cSrc,lDst,cDst)
+// ******************************************************************
+
+function forceTousMontagesInPlace(tapis,verbose=0) {
     if (verbose){
 	console.log("entre dans forceTousMontagesInPlace");
-	asciiOut(num)
+	asciiOut(tapis)
     }
     while (true) {
-	let b = forceUnMontageInPlace(num,verbose)
+	let b = forceUnMontageInPlace(tapis,verbose)
 	if (b==0)
 	    break;
     }
     if (verbose) {
-	asciiOut(num)
+	asciiOut(tapis)
 	console.log("quitte forceTousMontagesInPlace");
     }
-}  // FIN function forceTousMontagesInPlace(num)
+}  // FIN function forceTousMontagesInPlace(tapis)
 // **************************************************************
 
-function forceUnMontageInPlace(num,verbose=0) {
+function forceUnMontageInPlace(tapis,verbose=0) {
     // trouver une carte montable
     // s'il y en a : la monte et retourne
     // sinon retourne 0
@@ -1271,13 +960,13 @@ function forceUnMontageInPlace(num,verbose=0) {
     for(let l=0;l<5;l++) { //boucle sur les lignes
 	for(let cote=0;cote<2;cote++) // boucle sur cte gauche/droit
 	{
-	    let colBout = nbCartesGauche2(num,l)
+	    let colBout = nbCartesGauche2(tapis,l)
 	    if (cote==1)
-		colBout = nbCartesDroite2(num,l);
+		colBout = nbCartesDroite2(tapis,l);
 	    if (colBout==0)
 		continue
 	    let isrc = index(l,colBout);
-	    let src= num[isrc]
+	    let src= tapis[isrc]
 	    if (src==-1)
 		continue
 	    if (verbose)
@@ -1287,13 +976,13 @@ function forceUnMontageInPlace(num,verbose=0) {
 	    if (valSrc==0) {// On tente de monter un as 
 		for(let lp=1;lp<5;lp++){
 		    let idest = index(lp,0) // emplacement central
-		    if (num[idest]==-1) {
+		    if (tapis[idest]==-1) {
 			// ok c'est un as et une case libre
-			num[isrc] = -1;
-			num[idest] = src;
-			if (verbose) {
+			tapis[isrc] = -1;
+			tapis[idest] = src;
+			if (verbose>1) {
 			    console.log("monte "+src+"="+enClair(src)+" OUI")
-			    asciiOut(num)
+			    asciiOut(tapis)
 			    console.log("quite forceUnMontageInPlace")
 			}
 			return 1;
@@ -1303,14 +992,14 @@ function forceUnMontageInPlace(num,verbose=0) {
 		// pas un as
 		for(let lp=1;lp<5;lp++) { // boucle sur la destination 
 		    let idest = index(lp,0)
-		    let dest = num[idest]
+		    let dest = tapis[idest]
 		    if (dest==-1) { // case vide
 			if  (lp==0) { // que sur la moustache
-			    num[isrc]=-1;
-			    num[idest] = src;
+			    tapis[isrc]=-1;
+			    tapis[idest] = src;
 			    if (verbose) {
  				console.log("monte sur"+enClair(src)+"sur ma moustache"+cote)
- 				asciiOut(num)
+ 				asciiOut(tapis)
 				console.log("quite forceUnMontageInPlace")
 			    }
 			    return 1;
@@ -1324,11 +1013,11 @@ function forceUnMontageInPlace(num,verbose=0) {
 		    o += " "+valSrc+" "+coulSrc+"--> "+valDest+" "+coulDest
 		    if ((coulDest==coulSrc) && (valDest==valSrc-1)) {
 			// ok ca matche
-			num[isrc]=-1;
-			num[idest] = src;
+			tapis[isrc]=-1;
+			tapis[idest] = src;
 			if (verbose) {
 			    console.log(o+" OUI")
-			    asciiOut(num)
+			    asciiOut(tapis)
 			    console.log("quitte forceUnMontageInPlace")
 			}
 			return 1;
@@ -1343,64 +1032,29 @@ function forceUnMontageInPlace(num,verbose=0) {
     if (verbose)
 	console.log("quite forceUnMontageInPlace SANS RIEN MONTER")
     return 0;	    
-}  // FIN function forceUnMontageInPlace(num)
+}  // FIN function forceUnMontageInPlace(tapis)
 // ************************************************************
 
-function deplaceEtDeckise(num,src,des,verbose=false){
-// cur est le tapis courant on deplace la carte depuis src vers des
-// on ASSUME que le deplacement est possible
-// puis on monte ce qui peut monter
-    // puis on retourne le deck de 52 cartes correspondant
-    let numInitial = num.map((x)=>x)
-    let ls = src[0]
-    let cs = src[1]
-    let ld = des[0]
-    let cd = des[1]
-    let carte; //celle qui sera deplacee
-    if (verbose){
-	console.log("ds deplaceEtDeckise: ls,cs,ld,cd="+ls+" "+cs+" "+ld+" "+cd)
-	asciiOut(num)
+function isWon(tapis) {
+    // retourne true si gagne
+    for(let l=0;l<5;l++) {
+	if (nbCartesGauche2(tapis,l)!=0)
+	    return false
+	if (nbCartesDroite2(tapis,l)!=0)
+	    return false
     }
-    if (cd != 0) {  // car si la colonne destination est 0 sera montee a la fin
-	carte = num[index(ls,cs)]
-	num[index(ls,cs)] = -1
-	if (cd<0)
-	    cd -= 1;
-	else // cd!=0
-	    cd += 1;
-	num[index(ld,cd)] = carte
-    }
-    if (verbose) {
-	console.log("avant de monter de force:")
-	asciiOut(num)
-    }
-    // il reste a monter ce qui monte
-    forceTousMontagesInPlace(num,verbose)
-    if (verbose) {
-	console.log("apres avoir monter de force:")
-	asciiOut(num)
-    }
-    // on traite le fils
-    let ans = resume(num)
-    // on restaure
-    for(let i=0;i<numInitial.length;i++)
-	num[i] = numInitial[i]
-    if (verbose) {
-	console.log("apres restauration:")
-	asciiOut(num)
-    }
-    return ans;
-}  // FIN function deplaceEtDeckise(cur,src,des)
-// ************************************************************
+    return true
+} // function solve(verbose) 
+// ***********************************************************
 
 function solve(verbose) {
-    if (calledInBrowser) {
-	alert("still buggy try later")
-	return;
-    }
+    // if (calledInBrowser) {
+    // 	alert("still buggy try later")
+    // 	return;
+    // }
     forceTousMontagesInPlace(num);
     let  res = resume(num);
-    const pile = [];
+    const pile = []; // pile des deck (deck=tableaux de 52 entiers)
     const prof = [];
     pile.push(res);
     prof.push(1);
@@ -1411,18 +1065,28 @@ function solve(verbose) {
 	cpt++;
 	let cur = pile.pop()
 	let p = prof.pop()
-	if (verbose>5)
-	    console.log("pile.length= "+pile.length+" cpt="+cpt+ " prof="+p);
+	if (verbose>5) {
+	    console.log("pile.length= "+pile.length+" cpt="+cpt+ " prof="+p+" conf vues= "+vus.size);
+	    asciiOut(deResume(cur))
+	}
 	let tapis = deResume2(cur)
 	if (check(tapis)!=0) {
 	    console.log("check a retourne une erreur")
 	    if (!calledInBrowser)
 		process.exit(1)
 	}
-	desc = descendant2(tapis)
-	isUndefined(tapis,true);
+	//desc = descendant(tapis)
+	desc = listDescendants(tapis)
+	isUndefined(tapis,true); // sort si un element de ce tableau est undefined
 	if (desc.length==0) {
 	    feuilles.push([tapis,p])
+	    if (isWon(tapis)) {
+		console.log("won!");
+		asciiOut(tapis)
+		if (calledInBrowser)
+		    alert("gagnable !")
+		return
+	    }
 	}
 	for (let i=0;i<desc.length;i++) 
 	    if (!vus.has(a2s(desc[i]))) {
@@ -1433,20 +1097,24 @@ function solve(verbose) {
 	if (pile.length==0)
 	    break
     }
-    if (verbose>1)
+    if (verbose)
 	console.log("il y a "+feuilles.length+" feuilles ")
     let best = 52;
     for(let i=0;i<feuilles.length;i++) {
+	let feuille = feuilles[i][0]
 	let [mousGauche,mousDroite,cartesAMonter,prof]=analyseFeuille(feuilles[i])
 	if (cartesAMonter<best)
 	    best = cartesAMonter
-	if (cartesAMonter==0) {
-	    console.log("HOURRA "+ myRnd.seedUsed)
+	if (cartesAMonter==-10) { // bidon
+	    console.log("HOURRA ")
 	    if (!calledInBrowser)
 		process.exit(0);
 	}
-	if (verbose>=1) {
+	if (verbose>=2) 
 	    console.log("mousGauche,mousDroite,cartesAMonter,prof="+mousGauche+" "+mousDroite+" "+cartesAMonter+" "+prof)
+	if (verbose>=3) {
+	    console.log(a2s(resume(feuille)))
+	    asciiOut(feuille)
 	}
     }
     if (calledInBrowser)
@@ -1459,14 +1127,18 @@ function solve(verbose) {
 function asciiOut(cur) {
     if (cur==undefined)
 	cur = num
-    n0=0;
-    for(let l=1;l<5;l++)
-	if (getInPlaceNonGraphique2(cur,l,0)!=-1)
-	    n0 += 1
+    let plusAGauche = 0
+    for(let l=0;l<5;l++)
+	if (nbCartesGauche2(cur,l)<plusAGauche)
+	    plusAGauche = nbCartesGauche2(cur,l)
     oo=""
     for (let l=0;l<5;l++) {
-	for(let c=nbCartesGauche2(cur,l);c<=nbCartesDroite2(cur,l);c++) {
+	for(let c=plusAGauche;c<=nbCartesDroite2(cur,l);c++) {
 	    let k = getInPlaceNonGraphique2(cur,l,c);
+	    if (k==-1)
+		k = "  "
+	    else if (k<10)
+		k = " "+k
 	    if (c==0)
 		oo += " | "+k+" | ";
 	    else
@@ -1487,7 +1159,10 @@ function getInPlaceNonGraphique2(curr,l,c) { //quoi en l,c
 } // FIN function getInPlaceNonGraphique(l,c) 
 // *******************************************************************
 
-function nbCartesGauche2(cur,line) {
+function nbCartesGauche2(cur,line) { // en realite c'est MOINS le nombre de carte gauche
+    // pas de carte return 0
+    // une carte return -1
+    // deux cartes return -2 etc
     if ((line<0) || (line>5)) {
 	//alert("nbCartesGauche: line="+line);
 	return -1;
@@ -1503,6 +1178,9 @@ function nbCartesGauche2(cur,line) {
 // *******************************************************************
 
 function nbCartesDroite2(cur,line) {
+   // pas de carte return 0
+    // une carte return -1
+    // deux cartes return -2 etc
    if ((line<0) || (line>5)) {
 	//alert("nbCartesGauche: line="+line);
 	return -1;
@@ -1545,7 +1223,7 @@ function analyseFeuille(argu) {
     let tapis = argu[0]
     let prof = argu[1]
     let z = 0 // # cartes restantes a monter
-    for (l=1;l<5;l++)
+    for (l=0;l<5;l++)
 	z += -nbCartesGauche2(tapis,l) + nbCartesDroite2(tapis,l)
     return [ -nbCartesGauche2(tapis,0),nbCartesDroite2(tapis,0),z,prof]
 }  // FIN function analyseFeuille(feuille) 
@@ -1561,8 +1239,13 @@ function choix(deckStr) { // appelle par le bouton choix ou dans go
 	aux = s2a(elt.value)
     } else aux=s2a(deckStr);
     if (aux.length!=52) {
-	alert("donnee de longeur "+aux.length+" != 52")
-	return;
+	if (calledInBrowser) {
+	    alert("donnee de longeur "+aux.length+" != 52")
+	    return;
+	} else {
+	    console.log("donnee de longeur "+aux.length+" != 52")
+	    process.exit(1)
+	}
     }
     num = deResume2(aux)
     if (check()) {
@@ -1570,8 +1253,6 @@ function choix(deckStr) { // appelle par le bouton choix ou dans go
     }
     if (calledInBrowser)
 	showAllCardsOnScreen();
-    else
-	asciiOut(num)
 }  // FIN choix()
 // ************************************************************
 
@@ -1580,3 +1261,104 @@ function save() { // appelle par le bouton save : alerte de num
     alert(a2s(aux))
 }  // FIN save()
 // ************************************************************
+
+function listDescendants(tapis,verbose=0) {
+    // recoit un tapis
+    // retourne la liste des deck des descendants
+    // travail sur num qui est global
+    // on d'abord ce qui peut
+    // on liste les index des bords de ligne
+    // on essaie de deplacer sans tenir compte de la moustache
+    // on essaie de monter sur la moustache
+    if (verbose) {
+	console.log("avant montage force")
+	asciiOut(tapis)
+    }
+    forceTousMontagesInPlace(tapis)
+    if (verbose) {
+	console.log("apres montage force")
+	asciiOut(tapis)
+    }
+    ans = []
+    let indexBordPresents = []
+    for(let l=0;l<5;l++) {
+	let b = nbCartesGauche2(tapis,l)
+	if (b<0) // il y a donc bien unecarte sur cetteligne cote gauche
+	    indexBordPresents.push(index(l,b));
+	b = nbCartesDroite2(tapis,l)
+	if (b>0) // il y a donc bien unecarte sur cetteligne cote gauche
+	    indexBordPresents.push(index(l,b));
+    }
+    // ici on connait les index des cartes aux bords
+    // on a copie le tapis actuel pour pouvoir le restaurer
+    let tapisSaved = [...tapis]
+    // on va deplacer SANS LE CAS PARTICULIER DE LA MOUSTACHE
+    //console.log(indexBordPresents)
+    if (verbose) 
+	console.log("deplacemnts SANS particularite moustache")
+    for (let ksrc=0;ksrc<indexBordPresents.length;ksrc++) {
+	const srcInd = indexBordPresents[ksrc]
+	const srcVal = tapis[srcInd]
+	for (let kdst=0;kdst<indexBordPresents.length;kdst++) {
+	    const dstInd = indexBordPresents[kdst]
+	    const dstVal = tapis[dstInd] 
+	    if (ksrc==kdst)
+		continue
+	    o = srcInd+" --> "+dstInd+" "+enClair(srcVal)+" ==> "+enClair(dstVal)
+	    if (couleur(srcVal)!= couleur(dstVal))
+		continue
+	    if ((valeur(srcVal)!=valeur(dstVal)+1)&&(valeur(srcVal)!=valeur(dstVal)-1))
+		continue
+	    let [lin,col] =unindex(dstInd) 
+	    if (col<0)
+		col--
+	    else
+		col++
+	    tapis[index(lin,col)] = tapis[srcInd]
+	    tapis[srcInd] = -1
+	    if (verbose) {
+		console.log("OK j'y fais! "+o)
+		asciiOut(tapis)
+	    }
+	    ans.push(resume(tapis))
+	    tapis = [...tapisSaved]
+	}
+    }
+    if (verbose) 
+	console.log("deplacemnts SPECIAL moustache")
+    let b = nbCartesGauche2(tapis,0)
+    if (b==0) {
+	for (let ksrc=0;ksrc<indexBordPresents.length;ksrc++) {
+	    const srcInd = indexBordPresents[ksrc]
+	    const srcVal = tapis[srcInd]
+	    const dstInd = index(0,-1)
+	    tapis[dstInd] = tapis[srcInd]
+	    tapis[srcInd] = -1
+	    if (verbose) {
+		console.log(srcInd+" --> "+dstInd)
+		asciiOut(tapis)
+	    }
+	    ans.push(resume(tapis))
+	    tapis = [...tapisSaved]
+	}
+    }
+    b = nbCartesDroite2(tapis,0)
+    if (b==0) {
+	for (let ksrc=0;ksrc<indexBordPresents.length;ksrc++) {
+	    const srcInd = indexBordPresents[ksrc]
+	    const srcVal = tapis[srcInd]
+	    const dstInd = index(0,1)
+	    tapis[dstInd] = tapis[srcInd]
+	    tapis[srcInd] = -1
+	    if (verbose){
+		console.log(srcInd+" --> "+dstInd)
+		asciiOut(tapis)
+	    }
+	    ans.push(resume(tapis))
+	    tapis = [...tapisSaved]
+	}
+    }
+    return ans
+}  // FIN function listDescendantsde(tapis)
+// ****************************************************************************
+	
