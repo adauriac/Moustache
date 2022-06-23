@@ -23,14 +23,12 @@ class RandomSeeded {
 	this.mask = 0xffffffff;
 	this.seed(this.seedUsed);
     } // fin constructor(seed) 
- 
     // This set the seed, Takes any integer
     seed(i) {
 	this.seedUsed = i;
 	this.m_w = (123456789 + i) & this.mask;
 	this.m_z = (987654321 - i) & this.mask;
     } // fin seed(i)
-
     reSeed() {
 	// reinitialise au hasard
 	this.seedUsed = Math.floor(Math.random()*4294967296);
@@ -51,7 +49,7 @@ class RandomSeeded {
 // ****************************************************************
 //                      PARAMETRES MODIFIABLES
 // ****************************************************************
-// console.log("debut du script");
+console.log("debut du script");
 let verbose = 0; // sur la console
 let margeHaut = 100, margeCentre = 20;
 let lCarte = 96,cCarte = 75; // les dim sont 75x96
@@ -67,6 +65,7 @@ let cpt = 0;
 let C,L,elements;
 // est-ce que ce script a ete appelle depuis un fichier html
 // ou directement depuis la ligne de commande : node script.js
+console.log("hy3!")
 let calledInBrowser;
 if (typeof document === "undefined")
     calledInBrowser = false;
@@ -84,6 +83,9 @@ if (calledInBrowser) { // relatif a l'interface avec html
     let helpBtn = document.getElementById("help")
     helpBtn.style.left = C/2-cCarte/2+"px";
     helpBtn.style.top = bandeauEnHaut+"px";
+    // ci dessous on affecte une valeur gagnante au champ zoneEntree
+    let elt = document.getElementById("zoneEntree")
+    elt.value = "184_57_97_56_21_22_187_104_60_144_185_180_183_102_138_64_23_101_182_147_181_25_179_100_140_24_61_139_98_66_186_65_188_99_103_18_16_146_19_143_58_62_142_106_15_141_107_145_17_59_105_63"
 }
 
 // declaration
@@ -541,12 +543,15 @@ function updateInfo() {
 
 function makeElementDraggable(elmnt) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    var zInitial, topInitial,leftInitial,laLineInitial,laColInitial,indiceInitial,carteTraitee,coteInitial;
+    var zInitial, topInitial,leftInitial; // Pour restaurer tapis si movement refuse
+    var laLineInitial,laColInitial,indiceInitial,coteInitial; // pour decider si ok
+    var carteTraitee;
     /*  move the DIV from anywhere inside the DIV:*/
     elmnt.style.zIndex = -1;
-    elmnt.onmousedown = onMouseDown;
+    elmnt.onpointerdown = onMouseDown;
 
     function onMouseDown(e) {
+	console.log("onMouseDown")
       	e = e || window.event;
 	if (e.button != 0)
 	    return ;
@@ -571,18 +576,23 @@ function makeElementDraggable(elmnt) {
 //	console.log("je prend "+id+" carteTraitee="+carteTraitee+" en ("+laLigneInitial+","+laColInitial+") indice="+indiceInitial);
 	// a t on le droit de prendre cette carte ?
 	if (k==zInitial) {
+	    // c'est une carte que l'on peut deplacer car en bout de ligne
 	    elmnt.style.zIndex = 100;
-     	    document.onmouseup = closeDragElement;
-      	    // call a function whenever the cursor moves:
-      	    document.onmousemove = elementDrag;
-	} else {
-     	    document.onmouseup = null;
-      	    document.onmousemove = null;
+     	    document.onpointerup = closeDragElement;
+      	    document.onpointermove = elementDrag;
 	}
     } // FIN function onMouseDown(e)
+    // ********************************************************************
+    function nul(){console.log("nul");}
     
     function elementDrag(e) {
-      	e = e || window.event;
+	console.log("Enter elementDrag ")
+      	document.onpointermove = null; // pour eviter d'etre interrompu dans l'interuption
+	
+	console.log(e)
+      	e = e || window.event; // pour les vieux browser ...
+	// if (e.button != 0)
+	//     return ;
       	e.preventDefault();
       	// calculate the new cursor position:
       	pos1 = pos3 - e.clientX;
@@ -592,16 +602,21 @@ function makeElementDraggable(elmnt) {
       	// set the element's new position:
       	elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
       	elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+      	document.onpointermove = elementDrag;  // pour repermettre cette interuption
+	console.log("Leave elementDrag ")
     } // FIN function elementDrag(e)
+    // ********************************************************************
 
     function closeDragElement(e) {
       	/* stop moving when mouse button is released:*/
-      	e = e || window.event; // rajoute par JC
+ 	console.log("closeDragElement")
+     	e = e || window.event; // rajoute par JC
       	e.preventDefault(); // rajoute par JC
-      	document.onmouseup = null;
-      	document.onmousemove = null;
+      	document.onpointerup = nul;  // indispensable
+      	document.onpointermove = nul; // indispensable
 	let laLigneFinal = dsQuelleLigneEstCurseur(e.pageY) ;
-	if (laLigneFinal>=5) { //on ne peut poser de cartesur cette ligne
+	if ((laLigneFinal<0) || (laLigneFinal>=5)) { //carte hors tapis
+	    // on restaure les valeurs au moment du pointerdown corresponadant
 	    elmnt.style.top = topInitial;
       	    elmnt.style.left = leftInitial;
 	    elmnt.style.zIndex = zInitial;
@@ -610,6 +625,7 @@ function makeElementDraggable(elmnt) {
 	let coteFinal = deQuelCoteEstCurseur(e.pageX) ; // cote duquel on va tenter de poser
 	let caseDest = isOK(coteFinal,laLigneFinal,carteTraitee);
 	if ((typeof caseDest) == "number") {
+	    // on peut effectuer le deplacement
 	    tapisGlobal[index(laLigneInitial,laColInitial)] = -1; // plus de carte en initial
 	    tapisGlobal[caseDest] = carteTraitee; // elle est mise en Dest
 	    showAllCardsOnScreen();
@@ -619,9 +635,10 @@ function makeElementDraggable(elmnt) {
 	    coup ++;
 	    updateInfo();
 	} else {
-	    // pas d'alerte si c'est juste un appuie/relache
+	    // on Ne doit PAS effectuer le deplacement
 	    if ((laLigneInitial!=laLigneFinal) || (coteInitial!=coteFinal))
-		alert(caseDest);
+		alert(caseDest);// pas d'alerte si c'est juste un appuie/relache
+	    // restauration des valeurs lors du pointeur down correpondant a 
 	    elmnt.style.top = topInitial;
       	    elmnt.style.left = leftInitial;
 	    elmnt.style.zIndex = zInitial;
@@ -668,6 +685,7 @@ function makeElementDraggable(elmnt) {
 	} // fin test de gauche/centre/droite
 	return ok ? caseDest : enClair(carteTraitee)+ " ne peut aller sur "+enClair(poseSur)+" en "+unindexStr(caseDest);
     } // FIN function isOK()
+    // *********************************************************************
 
 } // FIN function makeElementDraggable(elmnt)
 // *******************************************************************
