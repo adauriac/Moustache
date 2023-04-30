@@ -1,0 +1,14 @@
+directory cree a Roccella Ionica depuis la tablette (sans reseau !)
+la libraririe est libMoustache.js.
+elle peut être appelée par resoudFile.js ou caller.js
+appel: cat libMoustache.js resoudFile.js | node  - [file]
+resoudFile.js prend un fichier ascii lisible et fait l'analyse ie développe l'arbre
+jusqu'à une solution ou entièrement parcouru.
+
+Le format des fichiers de données est compréhensible depuis l'esaemple:
+   1P AK RP 5C | 6T | 7K VK 8C 8K 4K
+1T 1C 9P 7C RC | AP | VC 2P 9C 6P VT
+   8P DT 1K 4C |    | 6K 9K DK 7T 5K
+DC 4P VP 7P 2K | 3C | RK 3P RT 3K 5P
+où
+A=as, 2=2, ... , 9=9,1=10, V=valet,D=dame,R=Roi
