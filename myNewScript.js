@@ -656,6 +656,9 @@ function makeElementDraggable(elmnt) {
 	let poseSur = -1;
 	if (coteFinal==0) {
 	    // colonne du milieu
+	    // verifuions que ce n'est pas la ligne d'en haut
+	    if (laLigneFinal==0)
+		return "case toujours interdite"
 	    caseDest = index(laLigneFinal,0);
 	    if (tapisGlobal[caseDest]==-1)  // case vide : on ne peut poser qu'un as
 		return valeur(carteTraitee)==0 ? caseDest: "on ne peut poser qu'un as ici";
