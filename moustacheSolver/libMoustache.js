@@ -1180,8 +1180,14 @@ function dehuman(h){
 	return -1 // pas un code a deux caracteres
     const vals=["A","2","3","4","5","6","7","8","9","1","V","D","R"]
     const fams=["K","T","C","P"]
+    const valsDown=["a","2","3","4","5","6","7","8","9","1","v","d","r"]
+    const famsDown=["k","t","c","p"]
     let v = vals.indexOf(h[0])
+    if (v== -1)
+	v = valsDown.indexOf(h[0])
     let f = fams.indexOf(h[1])
+    if (f==-1)
+	f = famsDown.indexOf(h[1])
     if ((v==-1) || (h==-1))
 	return -1; // un des caracteres par reconnu
     return karte(v,f)
