@@ -215,6 +215,7 @@ function help() {
     //console.log("carteMontantes "+carteMontantes);
     let zMont = 0;
     let zMatch = 0;
+    let matchantes = []
     for(var l=0;l<5;l++) {
      	let nbg = nbCartesGauche(l);
 	if (nbg!=0) {
