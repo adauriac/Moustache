@@ -251,15 +251,20 @@
       <button onclick="annuleDernierCoup()"> annulation dernier coup </button>
       <button onclick="nextTour()"> Tour suivant </button>
       <button onclick="solve()" id="solve"> résoud </button>
+      <!-- DECOMMENTER CES DEUX LIGNES POUR SAUVER OU CHARGER DES PARTIES
       <button onclick="choix()" id="choix"> choix </button>
       <button onclick="save()" id="save"> save </button>
+      -->
+      <button onclick="nouveauJeuGagnable()" id="nouvoGagnable">
+      nouveau jeu GAGNABLE </button>
       <button onclick="help()" id="help">
 	<strong> à l'aide !</strong></br>
  	<img src="uneMoustache.jpg" width="60%" height="40%">
       </button>
       <!-- <button onclick="switchMode()" id="switchMode"> mode </button>-->
     </center>
-    <input type="textarea" id="zoneEntree"> </input> <!-- ZONE OU ENTRER LA PARTIE -->
+    <!--  <input type="textarea" id="zoneEntree"> </input> ZONE OU ENTRER LA PARTIE -->
+    <script src="libMoustache.js"></script>
     <script src="myNewScript.js"></script>
   </body>
 </html>

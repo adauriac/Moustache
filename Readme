@@ -1,0 +1,9 @@
+# Moustache
+dragNew.html
+myNewScript.js
+libMoustache.js
+
+libMoustache.js contient des fonctions de toutes sortes.
+il faudrait splitter libMoustache.js en deux parties
+myNewScript.js contient juste 2 fonctions spécifiques a l'appel ds
+browser
