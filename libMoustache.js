@@ -500,7 +500,7 @@ function makeElementDraggable(elmnt) {
     elmnt.onpointerdown = onMouseDown;
 
     function onMouseDown(e) {
-	console.log("onMouseDown")
+	//console.log("onMouseDown")
       	e = e || window.event;
 	if (e.button != 0)
 	    return ;
@@ -535,7 +535,7 @@ function makeElementDraggable(elmnt) {
     function nul(){console.log("nul");}
     
     function elementDrag(e) {
-	console.log("Enter elementDrag ")
+	// console.log("Enter elementDrag ")
       	document.onpointermove = null; // pour eviter d'etre interrompu dans l'interuption
 	
 	console.log(e)
@@ -552,13 +552,13 @@ function makeElementDraggable(elmnt) {
       	elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
       	elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
       	document.onpointermove = elementDrag;  // pour repermettre cette interuption
-	console.log("Leave elementDrag ")
+	// console.log("Leave elementDrag ")
     } // FIN function elementDrag(e)
     // ********************************************************************
 
     function closeDragElement(e) {
       	/* stop moving when mouse button is released:*/
- 	console.log("closeDragElement")
+ 	// console.log("closeDragElement")
      	e = e || window.event; // rajoute par JC
       	e.preventDefault(); // rajoute par JC
       	document.onpointerup = nul;  // indispensable
@@ -605,6 +605,8 @@ function makeElementDraggable(elmnt) {
 	let poseSur = -1;
 	if (coteFinal==0) {
 	    // colonne du milieu
+	    if (laLigneFinal==0)
+		return "on ne peut mettre de carte sur cette case !";
 	    caseDest = index(laLigneFinal,0);
 	    if (tapisGlobal[caseDest]==-1)  // case vide : on ne peut poser qu'un as
 		return valeur(carteTraitee)==0 ? caseDest: "on ne peut poser qu'un as ici";
@@ -1077,20 +1079,23 @@ function solve(verbose) {
 		    let cur = chemin[i]
 		    let tapaux = deResume2(cur)
 		    // asciiOut(tapaux)
-		    console.log(i)
-		    asciiOutEnClair(tapaux)
+		    if ((typeof bidon === 'undefined') || (calledInBrowser)) {  // definie dans stst.js
+			console.log(i) // bidon
+			asciiOutEnClair(tapaux) // bidon
+		    }
 		}
-		if (!calledInBrowser)
-		    process.exit(123);// bidon
+		//if (!calledInBrowser)
+		//    process.exit(123);// bidon
 		// FIN SPECIAL ON SORT TOUTE L'HISTOIRE
 		if (verbose>=3)
 		    asciiOut(tapis)
 		if ((calledInBrowser) && (verbose!=-1))
-		    alert("gagnable !")
+		    alert("gagnable ce tour çi !(crtl-shift-I vous montrera une solution)")
 		tapisGlobal = [...tapisSaved]
-		console.log("gagnable moustache un deux "+uneMoust+" "+deuxMoust);
-		if (calledInBrowser==false)
-		    process.exit(1) ; 
+		if (verbose>0)
+		    console.log("gagnable moustache un deux "+uneMoust+" "+deuxMoust);
+		//if (calledInBrowser==false)
+		//    process.exit(1) ; 
 		return "gagnable moustache un deux "+uneMoust+" "+deuxMoust;
 	    }
 	}
@@ -1103,7 +1108,7 @@ function solve(verbose) {
 	if (pile.length==0)
 	    break
     }
-    if (verbose)
+    if (verbose>0)
 	console.log("il y a "+feuilles.length+" feuilles ")
     let best = 52;
     for(let i=0;i<feuilles.length;i++) {
@@ -1129,7 +1134,7 @@ function solve(verbose) {
     ans += ", feuille avec le moins de carte a monter "+best
     if ((calledInBrowser) && (verbose!=-1)) 
 	alert(ans)
-    if (verbose)
+    if (verbose>0)
 	console.log(best)
 
     tapisGlobal = [...tapisSaved]

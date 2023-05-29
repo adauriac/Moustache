@@ -12,3 +12,6 @@ Le format des fichiers de données est compréhensible depuis l'esaemple:
 DC 4P VP 7P 2K | 3C | RK 3P RT 3K 5P
 où
 A=as, 2=2, ... , 9=9,1=10, V=valet,D=dame,R=Roi
+*******************************************************************************
+pour stat :
+cat libMoustache.js stat.js | node 

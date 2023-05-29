@@ -173,7 +173,8 @@
       </center>
     </div>
     
-    <!-- le id represente la carte id/13=famille (d/c/h/s) id%13-1=valeur(0..12) -->
+    <!-- le id represente la carte id/13=famille (d/c/h/s)
+    id%13-1=valeur(0..12) -->
     <div class="mydiv" style="touch-action:none;" id="0"> <img src="1d.gif"> </div> <!-- 0 -->
     <div class="mydiv" id="1" > <img src="2d.gif"> </div> <!-- 1 -->
     <div class="mydiv" id="2" > <img src="3d.gif"> </div> <!-- 2 -->
@@ -229,7 +230,6 @@
     <div class="mydiv" id="49" > <img src="Js.gif"> </div> <!-- 49 -->
     <div class="mydiv" id="50" > <img src="Qs.gif"> </div> <!-- 50 -->
     <div class="mydiv" id="51" > <img src="Ks.gif"> </div> <!-- 51 -->
-
     <center>
       <button onclick="document.getElementById('tutoVideo').style.display='block';
 		       document.getElementById('poseInitiale').style.display='none'"
@@ -246,22 +246,24 @@
       </button>
     </center>
     <center>
-      <label id="outZone">  </label> 
       <input type="text" id="seedId" name="seedName" value="random"> </input>
       <button onclick="annuleDernierCoup()"> annulation dernier coup </button>
-      <button onclick="nextTour()"> Tour suivant </button>
-      <button onclick="solve()" id="solve"> résoud </button>
+      <button onclick="nextTour()"> tour suivant </button>
+      <button onclick="solve()" id="solve"> résoud ce tour </button>
       <!-- DECOMMENTER CES DEUX LIGNES POUR SAUVER OU CHARGER DES PARTIES
       <button onclick="choix()" id="choix"> choix </button>
       <button onclick="save()" id="save"> save </button>
       -->
-      <button onclick="nouveauJeuGagnable()" id="nouvoGagnable">
-      nouveau jeu GAGNABLE </button>
+      <button onclick="nouveauJeuGagnable()" id="nouvoGagnable"> nouveau jeu GAGNABLE </button>
+      <button onclick="nouveauJeuAleatoire()" id="nouvoAleatoire"> nouveau jeu ALÉATOIRE </button>
       <button onclick="help()" id="help">
-	<strong> à l'aide !</strong></br>
- 	<img src="uneMoustache.jpg" width="60%" height="40%">
+      <strong> à l'aide !</strong></br>
+      <img src="uneMoustache.jpg" width="60%" height="40%">
       </button>
       <!-- <button onclick="switchMode()" id="switchMode"> mode </button>-->
+    </center>
+    <center>
+      <label id="outZone">  </label> 
     </center>
     <!--  <input type="textarea" id="zoneEntree"> </input> ZONE OU ENTRER LA PARTIE -->
     <script src="libMoustache.js"></script>

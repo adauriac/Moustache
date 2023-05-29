@@ -17,7 +17,6 @@
 // ****************************************************************
 //                      PARAMETRES MODIFIABLES
 // ****************************************************************
-console.log("debut du script");
 let verbose = 0; // sur la console
 let margeHaut = 100, margeCentre = 20;
 let lCarte = 96,cCarte = 75; // les dim sont 75x96
@@ -44,6 +43,9 @@ if (calledInBrowser) { // relatif a l'interface avec html
     var isTouch = 'ontouchstart' in document.documentElement;
     C = screen.width; // nombre de colonnes de pixels
     L = screen.height; // nombre de lignes de pixels
+    C = window.innerWidth; // nombre de colonnes de pixels
+    L = window.innerHeight; // nombre de lignes de pixels
+    console.log("C="+C+" L="+L)
     var tutoVideo = document.getElementById("tutoVideo"); 
     elements = document.getElementsByClassName("mydiv");
     for (let i = 0; elements[i]; i++)
@@ -76,7 +78,6 @@ goMyNewScript();//go(3793366702);
 
 function goMyNewScript(seedSt) {
     // si seedSt==gagnable alors on generera une partie gagnable
-    console.log("go(seedSt) de myNewScript.js");
     let gagnable = (seedSt=="gagnable")
     // seedSt="1657205631" un exemple qui marche
     if (!isNaN(parseInt(seedSt)))  // si seedSt est un nombre
@@ -131,6 +132,7 @@ function nouveauJeuGagnable() {
 }  // FIN function nouveauJeuGagnable()
 // ************************************************************
 
-// ************************************************************
-//                  NOUVEAUTES POUR SOLVE
+function nouveauJeuAleatoire() {
+    goMyNewScript();
+}  // FIN function nouveauJeuGagnable()
 // ************************************************************

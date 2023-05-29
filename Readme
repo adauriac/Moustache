@@ -5,5 +5,10 @@ libMoustache.js
 
 libMoustache.js contient des fonctions de toutes sortes.
 il faudrait splitter libMoustache.js en deux parties
-myNewScript.js contient juste 2 fonctions spécifiques a l'appel ds
-browser
+myNewScript.js contient juste 2 fonctions spécifiques a l'appel ds browser
+
+
+TODO:
+faire que l'on puisse sauver et recharger des parties.
+montrer dans resoud la solution trouvee
+voir taille plus ou moins grande (# colonnes mininium=763, #lignes min = 566)
