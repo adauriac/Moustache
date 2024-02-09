@@ -33,6 +33,7 @@ let C,L,elements;
 // est-ce que ce script a ete appelle depuis un fichier html
 // ou directement depuis la ligne de commande : node script.js
 console.log("hy3!")
+alert("Meilleures salutation a la famille Dumas")
 let calledInBrowser;
 if (typeof document === "undefined")
     calledInBrowser = false;
