@@ -240,6 +240,34 @@ function help() {
 }  // FIN function help()
 // ************************************************************
 
+function fromSolverFormatToNumber(x) {
+    // passe du format solver au format numero de la carte
+    val = x[0]
+    if (val=="a")
+	val = 1
+    else if (val=="1")
+	val = 10
+    else if (val=="v")
+	val = 11
+    else if (val=="d")
+	val = 12
+    else if (val=="r")
+	val = 13
+    else
+	val = parseInt(val)
+    val = val -1 // part de 0 
+    if (x[1]=="k")
+	fam = 0
+    else if (x[1]=="t")
+	fam = 1
+    else if (x[1]=="c")
+	fam = 2
+    else if (x[1]=="p")
+	fam = 3
+    return val+13*fam
+}    // FIN fromSolverFormatToNumber()
+// ***************************************************************
+
 function poseLesCartesNonGraphique() {
     // CONTRUIT LE TABLEAU GLOBAL tapisGlobal EN POSANT
     // LES CARTES AVEC LA REGLE DES AS QUI MONTENT DIRECT
@@ -250,7 +278,69 @@ function poseLesCartesNonGraphique() {
     for (let i=0;i<52;i++)
 	P[i] = i;
     shuffle(P);
-    // on reinitilaise
+    if (beauJeuGlobal) {
+	beauJeuGlobal = 0; // pour le prochain appel 
+	console.log("special beau jeu")
+	myArray = [
+	    "1t",
+	    "vp",
+	    "rp",
+	    "2t",
+	    "5k",
+	    "at",
+	    "2k",
+	    "9t",
+	    "2p",
+	    "rt",
+	    "vt",
+	    "3k",
+	    "9k",
+	    "ak",
+	    "dc",
+	    "4p",
+	    "6p",
+	    "3c",
+	    "rc",	
+	    "4c",
+	    "5p",
+	    "4k",
+	    "5c",
+	    "8c",
+	    "8p",
+	    "ac",
+	    "8k",
+	    "7p",
+	    "dp",
+	    "6c",
+	    "2c",
+	    "vc",
+	    "1c",
+	    "7c",
+	    "3t",
+	    "1k",
+	    "5t",
+	    "3p",
+	    "1p",
+	    "9c",
+	    "rk",
+	    "7k",
+	    
+	    "ap",
+	    "6t",
+	    "dt",
+	    "9p",
+	    "7t",
+	    "8t",
+	    "4t",
+	    "6k",
+	    "dk",
+	    "vk"
+	];
+
+	for (let i=0;i<52;i++)
+	    P[i] = fromSolverFormatToNumber(myArray[i]);
+	// on reinitilaise
+    }
     tapisGlobal.fill(-1);
     let curL = 0;
     let curC = -1;

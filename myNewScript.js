@@ -64,6 +64,7 @@ var tapisGlobal = new Array(5*(20+1+20)); // 5 lignes et 20 cases a gauche 1 cas
 tapisGlobal.fill(-1); // -1 veut dire pas de carte. ATTENTION en colonne centrake (col=0) il y a une pile de cartes
 //Make the DIV element draggagle:
 
+let beauJeuGlobal = 0;
 let coup,tour;
 let myRnd = new RandomSeeded();  // random Generator
 let historique;
@@ -80,7 +81,8 @@ function goMyNewScript(seedSt) {
     // si seedSt==gagnable alors on generera une partie gagnable
     let gagnable = (seedSt=="gagnable")
     // seedSt="1657205631" un exemple qui marche
-    if (!isNaN(parseInt(seedSt)))  // si seedSt est un nombre
+    if (0) { // special partie jolie
+    } else if (!isNaN(parseInt(seedSt)))  // si seedSt est un nombre
 	myRnd.seed(parseInt(seedSt));
     else
 	myRnd.reSeed();
@@ -133,6 +135,12 @@ function nouveauJeuGagnable() {
 // ************************************************************
 
 function nouveauJeuAleatoire() {
+    goMyNewScript();
+}  // FIN function nouveauJeuGagnable()
+// ************************************************************
+
+function beauJeu() {
+    beauJeuGlobal = 1;
     goMyNewScript();
 }  // FIN function nouveauJeuGagnable()
 // ************************************************************
